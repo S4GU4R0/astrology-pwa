@@ -9,38 +9,269 @@
     <title>Astrological Chart</title>
     <style>
         :root {
-            --bg-color: #ffffff;
+            --bg-color: #f0f0f0;
             --text-color: #000000;
-            --border-color: #333333;
-            --menu-bg: #ffffff;
-            --menu-button-bg: #333333;
-            --menu-button-text: #ffffff;
+            --border-color: #c0c0c0;
+            --menu-bg: #f0f0f0;
+            --menu-button-bg: #e0e0e0;
+            --menu-button-text: #000000;
             --input-bg: #ffffff;
-            --input-border: #ddd;
-            --card-bg: #f9f9f9;
+            --input-border: #a0a0a0;
+            --card-bg: #ffffff;
+            --titlebar-bg: #ffffff;
+            --titlebar-border: #d0d0d0;
+            --sidebar-bg: #f5f5f5;
+            --hover-bg: #e5e5e5;
         }
         
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #1a1a1a;
+                --bg-color: #202020;
                 --text-color: #e0e0e0;
-                --border-color: #666666;
-                --menu-bg: #1a1a1a;
-                --menu-button-bg: #444444;
-                --menu-button-text: #ffffff;
-                --input-bg: #333333;
-                --input-border: #555555;
+                --border-color: #404040;
+                --menu-bg: #2a2a2a;
+                --menu-button-bg: #383838;
+                --menu-button-text: #e0e0e0;
+                --input-bg: #2a2a2a;
+                --input-border: #404040;
                 --card-bg: #2a2a2a;
+                --titlebar-bg: #2a2a2a;
+                --titlebar-border: #404040;
+                --sidebar-bg: #252525;
+                --hover-bg: #353535;
             }
         }
         
         body {
             margin: 0;
             padding: 0;
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: var(--bg-color);
             color: var(--text-color);
+            font-size: 13px;
+            overflow: hidden;
         }
+        
+        /* Desktop layout */
+        @media (min-width: 768px) {
+            body {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+            
+            /* Menu bar */
+            #menubar {
+                height: 28px;
+                background: var(--card-bg);
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                align-items: center;
+                padding: 0 8px;
+                font-size: 13px;
+            }
+            
+            #menubar .menu-item {
+                padding: 4px 12px;
+                cursor: pointer;
+                position: relative;
+            }
+            
+            #menubar .menu-item:hover {
+                background: var(--hover-bg);
+            }
+            
+            /* Dropdown menus */
+            .dropdown-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                min-width: 150px;
+                z-index: 1000;
+            }
+            
+            .dropdown-menu.show {
+                display: block;
+            }
+            
+            .dropdown-menu .menu-option {
+                padding: 6px 12px;
+                cursor: pointer;
+                font-size: 13px;
+            }
+            
+            .dropdown-menu .menu-option:hover {
+                background: var(--hover-bg);
+            }
+            
+            /* Main content wrapper */
+            #desktop-wrapper {
+                display: flex;
+                flex: 1;
+                overflow: hidden;
+            }
+            
+            /* Sidebar */
+            #desktop-sidebar {
+                width: 180px;
+                background: var(--sidebar-bg);
+                border-right: 1px solid var(--border-color);
+                overflow-y: auto;
+            }
+            
+            #desktop-sidebar .nav-item {
+                padding: 6px 12px;
+                cursor: pointer;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+                color: var(--text-color);
+                font-size: 13px;
+            }
+            
+            #desktop-sidebar .nav-item:hover {
+                background: var(--hover-bg);
+            }
+            
+            #desktop-sidebar .nav-item.active {
+                background: var(--hover-bg);
+            }
+            
+            /* Main area */
+            #main-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            
+            /* Toolbar */
+            #toolbar {
+                height: 40px;
+                background: var(--card-bg);
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                align-items: center;
+                padding: 0 8px;
+                gap: 4px;
+            }
+            
+            #toolbar button {
+                padding: 4px 8px;
+                background: var(--menu-button-bg);
+                border: 1px solid var(--border-color);
+                color: var(--menu-button-text);
+                cursor: pointer;
+                font-size: 12px;
+            }
+            
+            #toolbar button:hover {
+                background: var(--hover-bg);
+            }
+            
+            #toolbar button:active {
+                background: var(--border-color);
+            }
+            
+            /* Content area */
+            #content-area {
+                flex: 1;
+                overflow: auto;
+                padding: 20px;
+            }
+            
+            /* Status bar */
+            #statusbar {
+                height: 24px;
+                background: var(--card-bg);
+                border-top: 1px solid var(--border-color);
+                display: flex;
+                align-items: center;
+                padding: 0 8px;
+                font-size: 12px;
+            }
+            
+            /* Form styling */
+            #controls {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+                background: none;
+            }
+            
+            #controls h3 {
+                font-size: 14px;
+                font-weight: 600;
+                margin: 0 0 16px 0;
+            }
+            
+            #controls table {
+                border-collapse: collapse;
+            }
+            
+            #controls td {
+                padding: 4px 8px 4px 0;
+            }
+            
+            #controls label {
+                display: inline;
+                margin: 0;
+                font-size: 13px;
+            }
+            
+            #controls input {
+                width: 80px;
+                padding: 3px 6px;
+                background: var(--input-bg);
+                border: 1px solid var(--input-border);
+                color: var(--text-color);
+                font-size: 13px;
+            }
+            
+            #controls button {
+                margin-top: 16px;
+                padding: 5px 16px;
+                background: var(--menu-button-bg);
+                border: 1px solid var(--border-color);
+                color: var(--menu-button-text);
+                cursor: pointer;
+                font-size: 13px;
+            }
+            
+            #controls button:hover {
+                background: var(--hover-bg);
+            }
+            
+            #chart-container {
+                margin-top: 20px;
+                max-width: 600px;
+            }
+            
+            #chart {
+                width: 100%;
+                height: auto;
+            }
+            
+            /* Hide mobile UI */
+            #menu-button,
+            #export-button,
+            #menu {
+                display: none;
+            }
+        }
+        
+        /* Mobile layout */
+        @media (max-width: 767px) {
+            #desktop-sidebar,
+            #desktop-header {
+                display: none;
+            }
+        }
+        
         #menu-button {
             position: fixed;
             bottom: 20px;
@@ -151,31 +382,96 @@
     </style>
 </head>
 <body>
+    <!-- Mobile buttons -->
     <button id="export-button" onclick="exportChart()">↓</button>
     <button id="menu-button" onclick="toggleMenu()">+</button>
     
+    <!-- Mobile menu -->
     <div id="menu">
         <button onclick="showManualChart()">Manual Chart</button>
     </div>
     
-    <div id="controls">
-        <h3>Manual Chart</h3>
-        <label>Sun: <input type="number" id="sun" value="135" min="0" max="360"></label>
-        <label>Moon: <input type="number" id="moon" value="45" min="0" max="360"></label>
-        <label>Mercury: <input type="number" id="mercury" value="120" min="0" max="360"></label>
-        <label>Venus: <input type="number" id="venus" value="180" min="0" max="360"></label>
-        <label>Mars: <input type="number" id="mars" value="300" min="0" max="360"></label>
-        <label>Jupiter: <input type="number" id="jupiter" value="90" min="0" max="360"></label>
-        <label>Saturn: <input type="number" id="saturn" value="270" min="0" max="360"></label>
-        <label>Uranus: <input type="number" id="uranus" value="60" min="0" max="360"></label>
-        <label>Neptune: <input type="number" id="neptune" value="330" min="0" max="360"></label>
-        <label>Pluto: <input type="number" id="pluto" value="240" min="0" max="360"></label>
-        <label>Ascendant: <input type="number" id="ascendant" value="0" min="0" max="360"></label>
-        <button class="update-button" onclick="updateChart()">Update Chart</button>
+    <!-- Desktop menu bar -->
+    <div id="menubar">
+        <div class="menu-item">File</div>
+        <div class="menu-item">Edit</div>
+        <div class="menu-item">View</div>
+        <div class="menu-item" onclick="toggleHelpMenu(event)">
+            Help
+            <div class="dropdown-menu" id="help-menu">
+                <div class="menu-option" onclick="contactAuthor()">Contact Author</div>
+            </div>
+        </div>
     </div>
     
-    <div id="chart-container">
-        <svg id="chart" viewBox="0 0 600 600"></svg>
+    <!-- Desktop wrapper -->
+    <div id="desktop-wrapper">
+        <!-- Sidebar -->
+        <div id="desktop-sidebar">
+            <button class="nav-item active" onclick="showManualChart()">Manual Chart</button>
+        </div>
+        
+        <!-- Main content -->
+        <div id="main-content">
+            <!-- Toolbar -->
+            <div id="toolbar">
+                <button onclick="exportChart()">Export</button>
+                <button onclick="updateChart()">Update</button>
+            </div>
+            
+            <!-- Content area -->
+            <div id="content-area">
+                <div id="controls">
+                    <h3>Manual Chart</h3>
+                    <table>
+                        <tr>
+                            <td><label for="sun">Sun:</label></td>
+                            <td><input type="number" id="sun" value="135" min="0" max="360"></td>
+                            <td><label for="moon">Moon:</label></td>
+                            <td><input type="number" id="moon" value="45" min="0" max="360"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="mercury">Mercury:</label></td>
+                            <td><input type="number" id="mercury" value="120" min="0" max="360"></td>
+                            <td><label for="venus">Venus:</label></td>
+                            <td><input type="number" id="venus" value="180" min="0" max="360"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="mars">Mars:</label></td>
+                            <td><input type="number" id="mars" value="300" min="0" max="360"></td>
+                            <td><label for="jupiter">Jupiter:</label></td>
+                            <td><input type="number" id="jupiter" value="90" min="0" max="360"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="saturn">Saturn:</label></td>
+                            <td><input type="number" id="saturn" value="270" min="0" max="360"></td>
+                            <td><label for="uranus">Uranus:</label></td>
+                            <td><input type="number" id="uranus" value="60" min="0" max="360"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="neptune">Neptune:</label></td>
+                            <td><input type="number" id="neptune" value="330" min="0" max="360"></td>
+                            <td><label for="pluto">Pluto:</label></td>
+                            <td><input type="number" id="pluto" value="240" min="0" max="360"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="ascendant">Ascendant:</label></td>
+                            <td><input type="number" id="ascendant" value="0" min="0" max="360"></td>
+                        </tr>
+                    </table>
+                    <button onclick="updateChart()">Update Chart</button>
+                </div>
+                
+                <div id="chart-container">
+                    <svg id="chart" viewBox="0 0 600 600"></svg>
+                </div>
+            </div>
+            
+            <!-- Status bar -->
+            <div id="statusbar">
+                <span>Ready</span>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -435,6 +731,30 @@
                 .then(registration => console.log('Service Worker registered'))
                 .catch(error => console.log('Service Worker registration failed:', error));
         }
+        
+        /**
+         * Toggle the Help menu dropdown
+         */
+        function toggleHelpMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('help-menu');
+            menu.classList.toggle('show');
+        }
+        
+        /**
+         * Contact the author
+         */
+        function contactAuthor() {
+            window.location.href = 'mailto:your-email@example.com?subject=Astro Chart Feedback';
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            const menu = document.getElementById('help-menu');
+            if (menu) {
+                menu.classList.remove('show');
+            }
+        });
         
         // ============================================
         // Menu and Navigation
