@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#333333">
     <meta name="description" content="Astrological chart generator with whole sign houses">
     <link rel="manifest" href="manifest.json">
-    <title>Astrodex</title>
+    <title>Astrological Chart</title>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -55,6 +55,22 @@
             cursor: pointer;
             z-index: 1000;
             font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        #export-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            background: var(--menu-button-bg);
+            color: var(--menu-button-text);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 18px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         #menu {
@@ -135,11 +151,11 @@
     </style>
 </head>
 <body>
+    <button id="export-button" onclick="exportChart()">↓</button>
     <button id="menu-button" onclick="toggleMenu()">+</button>
     
     <div id="menu">
         <button onclick="showManualChart()">Manual Chart</button>
-        <button onclick="exportChart()">Export as Image</button>
     </div>
     
     <div id="controls">
@@ -480,7 +496,6 @@
             };
             
             img.src = url;
-            toggleMenu(); // Close menu after export
         }
         
         // ============================================
