@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#333333">
     <meta name="description" content="Astrological chart generator with whole sign houses">
     <link rel="manifest" href="manifest.json">
-    <title>Astrological Chart</title>
+    <title>Astrodex</title>
     <style>
         :root {
             --bg-color: #f0f0f0;
@@ -18,8 +18,6 @@
             --input-bg: #ffffff;
             --input-border: #a0a0a0;
             --card-bg: #ffffff;
-            --titlebar-bg: #ffffff;
-            --titlebar-border: #d0d0d0;
             --sidebar-bg: #f5f5f5;
             --hover-bg: #e5e5e5;
         }
@@ -35,8 +33,6 @@
                 --input-bg: #2a2a2a;
                 --input-border: #404040;
                 --card-bg: #2a2a2a;
-                --titlebar-bg: #2a2a2a;
-                --titlebar-border: #404040;
                 --sidebar-bg: #252525;
                 --hover-bg: #353535;
             }
@@ -107,14 +103,21 @@
                 background: var(--hover-bg);
             }
             
-            /* Main content wrapper */
+            /* Main content wrapper - contains sidebar and content side by side */
             #desktop-wrapper {
+                display: flex;
+                flex: 1;
+                overflow: hidden;
+                flex-direction: column;
+            }
+            
+            #main-content-wrapper {
                 display: flex;
                 flex: 1;
                 overflow: hidden;
             }
             
-            /* Sidebar */
+            /* Sidebar - starts below toolbar */
             #desktop-sidebar {
                 width: 180px;
                 background: var(--sidebar-bg);
@@ -393,7 +396,12 @@
     
     <!-- Desktop menu bar -->
     <div id="menubar">
-        <div class="menu-item">File</div>
+        <div class="menu-item" onclick="toggleFileMenu(event)">
+            File
+            <div class="dropdown-menu" id="file-menu">
+                <div class="menu-option" onclick="exportChart()">Export</div>
+            </div>
+        </div>
         <div class="menu-item">Edit</div>
         <div class="menu-item">View</div>
         <div class="menu-item" onclick="toggleHelpMenu(event)">
@@ -406,70 +414,72 @@
     
     <!-- Desktop wrapper -->
     <div id="desktop-wrapper">
-        <!-- Sidebar -->
-        <div id="desktop-sidebar">
-            <button class="nav-item active" onclick="showManualChart()">Manual Chart</button>
+        <!-- Toolbar -->
+        <div id="toolbar">
+            <button onclick="updateChart()">Update</button>
         </div>
         
-        <!-- Main content -->
-        <div id="main-content">
-            <!-- Toolbar -->
-            <div id="toolbar">
-                <button onclick="exportChart()">Export</button>
-                <button onclick="updateChart()">Update</button>
+        <!-- Content wrapper with sidebar and main area side by side -->
+        <div id="main-content-wrapper">
+            <!-- Sidebar -->
+            <div id="desktop-sidebar">
+                <button class="nav-item active" onclick="showManualChart()">Manual Chart</button>
             </div>
             
-            <!-- Content area -->
-            <div id="content-area">
-                <div id="controls">
-                    <h3>Manual Chart</h3>
-                    <table>
-                        <tr>
-                            <td><label for="sun">Sun:</label></td>
-                            <td><input type="number" id="sun" value="135" min="0" max="360"></td>
-                            <td><label for="moon">Moon:</label></td>
-                            <td><input type="number" id="moon" value="45" min="0" max="360"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="mercury">Mercury:</label></td>
-                            <td><input type="number" id="mercury" value="120" min="0" max="360"></td>
-                            <td><label for="venus">Venus:</label></td>
-                            <td><input type="number" id="venus" value="180" min="0" max="360"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="mars">Mars:</label></td>
-                            <td><input type="number" id="mars" value="300" min="0" max="360"></td>
-                            <td><label for="jupiter">Jupiter:</label></td>
-                            <td><input type="number" id="jupiter" value="90" min="0" max="360"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="saturn">Saturn:</label></td>
-                            <td><input type="number" id="saturn" value="270" min="0" max="360"></td>
-                            <td><label for="uranus">Uranus:</label></td>
-                            <td><input type="number" id="uranus" value="60" min="0" max="360"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="neptune">Neptune:</label></td>
-                            <td><input type="number" id="neptune" value="330" min="0" max="360"></td>
-                            <td><label for="pluto">Pluto:</label></td>
-                            <td><input type="number" id="pluto" value="240" min="0" max="360"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="ascendant">Ascendant:</label></td>
-                            <td><input type="number" id="ascendant" value="0" min="0" max="360"></td>
-                        </tr>
-                    </table>
-                    <button onclick="updateChart()">Update Chart</button>
+            <!-- Main content -->
+            <div id="main-content">
+                <!-- Content area -->
+                <div id="content-area">
+                    <div id="controls">
+                        <h3>Manual Chart</h3>
+                        <table>
+                            <tr>
+                                <td><label for="sun">Sun:</label></td>
+                                <td><input type="number" id="sun" value="135" min="0" max="360"></td>
+                                <td><label for="moon">Moon:</label></td>
+                                <td><input type="number" id="moon" value="45" min="0" max="360"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="mercury">Mercury:</label></td>
+                                <td><input type="number" id="mercury" value="120" min="0" max="360"></td>
+                                <td><label for="venus">Venus:</label></td>
+                                <td><input type="number" id="venus" value="180" min="0" max="360"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="mars">Mars:</label></td>
+                                <td><input type="number" id="mars" value="300" min="0" max="360"></td>
+                                <td><label for="jupiter">Jupiter:</label></td>
+                                <td><input type="number" id="jupiter" value="90" min="0" max="360"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="saturn">Saturn:</label></td>
+                                <td><input type="number" id="saturn" value="270" min="0" max="360"></td>
+                                <td><label for="uranus">Uranus:</label></td>
+                                <td><input type="number" id="uranus" value="60" min="0" max="360"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="neptune">Neptune:</label></td>
+                                <td><input type="number" id="neptune" value="330" min="0" max="360"></td>
+                                <td><label for="pluto">Pluto:</label></td>
+                                <td><input type="number" id="pluto" value="240" min="0" max="360"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="ascendant">Ascendant:</label></td>
+                                <td><input type="number" id="ascendant" value="0" min="0" max="360"></td>
+                            </tr>
+                        </table>
+                        <button onclick="updateChart()">Update Chart</button>
+                    </div>
+                    
+                    <div id="chart-container">
+                        <svg id="chart" viewBox="0 0 600 600"></svg>
+                    </div>
                 </div>
                 
-                <div id="chart-container">
-                    <svg id="chart" viewBox="0 0 600 600"></svg>
+                <!-- Status bar -->
+                <div id="statusbar">
+                    <span>Ready</span>
                 </div>
-            </div>
-            
-            <!-- Status bar -->
-            <div id="statusbar">
-                <span>Ready</span>
             </div>
         </div>
     </div>
@@ -733,27 +743,38 @@
         }
         
         /**
+         * Toggle the File menu dropdown
+         */
+        function toggleFileMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('file-menu');
+            menu.classList.toggle('show');
+            // Close help menu if open
+            document.getElementById('help-menu').classList.remove('show');
+        }
+        
+        /**
          * Toggle the Help menu dropdown
          */
         function toggleHelpMenu(event) {
             event.stopPropagation();
             const menu = document.getElementById('help-menu');
             menu.classList.toggle('show');
+            // Close file menu if open
+            document.getElementById('file-menu').classList.remove('show');
         }
         
         /**
          * Contact the author
          */
         function contactAuthor() {
-            window.location.href = 'mailto:your-email@example.com?subject=Astro Chart Feedback';
+            window.location.href = 'mailto:your-email@example.com?subject=Astrodex Feedback';
         }
         
         // Close dropdown when clicking outside
         document.addEventListener('click', function() {
-            const menu = document.getElementById('help-menu');
-            if (menu) {
-                menu.classList.remove('show');
-            }
+            document.getElementById('help-menu')?.classList.remove('show');
+            document.getElementById('file-menu')?.classList.remove('show');
         });
         
         // ============================================
