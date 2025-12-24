@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#333333">
+    <meta name="description" content="Astrological chart generator with whole sign houses">
+    <link rel="manifest" href="manifest.json">
+    <title>Astrodex</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --border-color: #333333;
+            --menu-bg: #ffffff;
+            --menu-button-bg: #333333;
+            --menu-button-text: #ffffff;
+            --input-bg: #ffffff;
+            --input-border: #ddd;
+            --card-bg: #f9f9f9;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a;
+                --text-color: #e0e0e0;
+                --border-color: #666666;
+                --menu-bg: #1a1a1a;
+                --menu-button-bg: #444444;
+                --menu-button-text: #ffffff;
+                --input-bg: #333333;
+                --input-border: #555555;
+                --card-bg: #2a2a2a;
+            }
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+        #menu-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            padding: 0;
+            background: var(--menu-button-bg);
+            color: var(--menu-button-text);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        #menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-color);
+            border-top: 1px solid var(--border-color);
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            z-index: 999;
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        #menu.active {
+            transform: translateY(0);
+        }
+        #menu button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--card-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            color: var(--text-color);
+        }
+        #menu button:hover {
+            opacity: 0.8;
+        }
+        #controls {
+            max-width: 600px;
+            margin: 0 auto 100px;
+            padding: 20px;
+            display: none;
+        }
+        #controls.active {
+            display: block;
+        }
+        #controls h3 {
+            margin-top: 0;
+        }
+        #controls label {
+            display: inline-block;
+            margin: 5px;
+        }
+        #controls input {
+            width: 60px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--input-border);
+            padding: 5px;
+            border-radius: 3px;
+        }
+        #controls .update-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background: var(--menu-button-bg);
+            color: var(--menu-button-text);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #chart-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        #chart {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <button id="menu-button" onclick="toggleMenu()">+</button>
+    
+    <div id="menu">
+        <button onclick="showManualChart()">Manual Chart</button>
+        <button onclick="exportChart()">Export as Image</button>
+    </div>
+    
+    <div id="controls">
+        <h3>Manual Chart</h3>
+        <label>Sun: <input type="number" id="sun" value="135" min="0" max="360"></label>
+        <label>Moon: <input type="number" id="moon" value="45" min="0" max="360"></label>
+        <label>Mercury: <input type="number" id="mercury" value="120" min="0" max="360"></label>
+        <label>Venus: <input type="number" id="venus" value="180" min="0" max="360"></label>
+        <label>Mars: <input type="number" id="mars" value="300" min="0" max="360"></label>
+        <label>Jupiter: <input type="number" id="jupiter" value="90" min="0" max="360"></label>
+        <label>Saturn: <input type="number" id="saturn" value="270" min="0" max="360"></label>
+        <label>Uranus: <input type="number" id="uranus" value="60" min="0" max="360"></label>
+        <label>Neptune: <input type="number" id="neptune" value="330" min="0" max="360"></label>
+        <label>Pluto: <input type="number" id="pluto" value="240" min="0" max="360"></label>
+        <label>Ascendant: <input type="number" id="ascendant" value="0" min="0" max="360"></label>
+        <button class="update-button" onclick="updateChart()">Update Chart</button>
+    </div>
+    
+    <div id="chart-container">
+        <svg id="chart" viewBox="0 0 600 600"></svg>
+    </div>
+
+    <script>
+        /**
+         * AstroChart - Astrological Chart Renderer
+         * 
+         * Creates a circular astrological chart (natal chart wheel) using SVG.
+         * Uses whole sign house system where each zodiac sign = one house.
+         * 
+         * @param {string} svgId - ID of the SVG element to render into
+         * @param {Object} planets - Planet positions as {planetName: longitude} where longitude is 0-360°
+         * @param {number} ascendant - Ascendant degree (0-360°), determines chart rotation
+         */
+        class AstroChart {
+            constructor(svgId, planets, ascendant) {
+                this.svg = document.getElementById(svgId);
+                
+                // Chart dimensions
+                this.centerX = 300;
+                this.centerY = 300;
+                this.outerRadius = 280;  // Outer edge of zodiac wheel
+                this.innerRadius = 200;  // Inner edge of zodiac wheel (house numbers inside this)
+                this.planetRadius = 160; // Radius at which planets are placed
+                
+                // Data
+                this.planets = planets;
+                this.ascendant = ascendant;
+                
+                // Zodiac signs in order: Aries through Pisces
+                this.signs = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'];
+                
+                // Planet glyphs (astronomical symbols)
+                this.planetGlyphs = {
+                    sun: '☉',
+                    moon: '☽',
+                    mercury: '☿',
+                    venus: '♀',
+                    mars: '♂',
+                    jupiter: '♃',
+                    saturn: '♄',
+                    uranus: '♅',
+                    neptune: '♆',
+                    pluto: '♇'
+                };
+                
+                // Detect color scheme
+                this.isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                this.colors = {
+                    line: this.isDarkMode ? '#999' : '#333',
+                    text: this.isDarkMode ? '#e0e0e0' : '#000',
+                    houseText: this.isDarkMode ? '#aaa' : '#666',
+                    houseLine: this.isDarkMode ? '#777' : '#666',
+                    planetBg: this.isDarkMode ? '#2a2a2a' : '#fff',
+                    planetBorder: this.isDarkMode ? '#e0e0e0' : '#000'
+                };
+                
+                this.draw();
+            }
+            
+            /**
+             * Convert astrological longitude to SVG x,y coordinates
+             * 
+             * Astrological convention:
+             * - 0° = 0° Aries
+             * - Degrees increase clockwise around the zodiac (Aries -> Taurus -> Gemini...)
+             * - Ascendant is placed at the 9 o'clock position (left side of chart)
+             * 
+             * SVG/Math convention:
+             * - 0° = 3 o'clock (right)
+             * - Degrees increase counterclockwise
+             * - So we need to transform: astrological degrees -> SVG angle
+             * 
+             * @param {number} degree - Astrological longitude (0-360°)
+             * @param {number} radius - Distance from center
+             * @returns {Object} {x, y} coordinates
+             */
+            polarToCartesian(degree, radius) {
+                // Calculate how many degrees this point is from the ascendant
+                const degreesFromAsc = degree - this.ascendant;
+                
+                // Place ascendant at 180° in SVG (= 9 o'clock = left side)
+                // Add degrees going clockwise (which appears as increasing angle in SVG due to y-flip)
+                const svgAngle = 180 + degreesFromAsc;
+                const angleRad = svgAngle * Math.PI / 180;
+                
+                return {
+                    x: this.centerX + radius * Math.cos(angleRad),
+                    y: this.centerY - radius * Math.sin(angleRad)  // Subtract because SVG y-axis is flipped
+                };
+            }
+            
+            /**
+             * Main drawing function - orchestrates rendering of all chart elements
+             */
+            draw() {
+                this.drawZodiacWheel();
+                this.drawHouses();
+                this.drawPlanets();
+            }
+            
+            /**
+             * Draw the zodiac wheel with 12 signs
+             * - Outer and inner circles forming the wheel rim
+             * - 12 division lines separating the signs
+             * - Sign glyphs positioned in the middle of each sign's section
+             */
+            drawZodiacWheel() {
+                // Draw outer circle
+                this.drawCircle(this.centerX, this.centerY, this.outerRadius, 'none', this.colors.line, 2);
+                
+                // Draw inner circle
+                this.drawCircle(this.centerX, this.centerY, this.innerRadius, 'none', this.colors.line, 2);
+                
+                // Draw 12 sign divisions and labels
+                for (let i = 0; i < 12; i++) {
+                    // Each sign occupies 30° of the zodiac
+                    // i=0: Aries (0°-30°), i=1: Taurus (30°-60°), etc.
+                    const signDegree = i * 30;
+                    
+                    // Draw division line at the START of each sign (the cusp)
+                    const lineStart = this.polarToCartesian(signDegree, this.innerRadius);
+                    const lineEnd = this.polarToCartesian(signDegree, this.outerRadius);
+                    this.drawLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y, this.colors.line, 1);
+                    
+                    // Draw sign glyph in the MIDDLE of the sign (15° into the sign)
+                    const signPos = this.polarToCartesian(signDegree + 15, (this.outerRadius + this.innerRadius) / 2);
+                    this.drawText(this.signs[i], signPos.x, signPos.y, '24px serif', this.colors.text);
+                }
+            }
+            
+            /**
+             * Draw house cusps and numbers
+             * 
+             * In whole sign houses:
+             * - Each zodiac sign = one house
+             * - 1st house = the sign containing the ascendant
+             * - Houses are numbered 1-12 going counterclockwise from ascendant
+             * - House cusps are at 0° of each sign
+             */
+            drawHouses() {
+                // Determine which sign the ascendant falls in (0-11)
+                // Floor division: 0-29° = sign 0 (Aries), 30-59° = sign 1 (Taurus), etc.
+                const ascSign = Math.floor(this.ascendant / 30);
+                
+                // Draw house cusp lines and numbers
+                for (let i = 0; i < 12; i++) {
+                    const houseNum = i + 1;  // Houses numbered 1-12
+                    
+                    // Which sign does this house correspond to?
+                    // Add i to ascendant's sign, wrapping around after Pisces (sign 11)
+                    const signIndex = (ascSign + i) % 12;
+                    
+                    // House cusp is at 0° of the sign
+                    const cuspDegree = signIndex * 30;
+                    
+                    // Draw house cusp line from center to inner circle
+                    const cuspInner = this.polarToCartesian(cuspDegree, 0);
+                    const cuspOuter = this.polarToCartesian(cuspDegree, this.innerRadius);
+                    this.drawLine(cuspInner.x, cuspInner.y, cuspOuter.x, cuspOuter.y, this.colors.houseLine, 1.5);
+                    
+                    // Draw house number inside the inner circle, in middle of house
+                    const housePos = this.polarToCartesian(cuspDegree + 15, this.innerRadius - 30);
+                    this.drawText(houseNum.toString(), housePos.x, housePos.y, '16px sans-serif', this.colors.houseText);
+                }
+                
+                // Draw ascendant marker text (outside the wheel)
+                const ascPos = this.polarToCartesian(this.ascendant, this.outerRadius + 20);
+                this.drawText('ASC', ascPos.x, ascPos.y, '14px sans-serif', this.colors.text, 'bold');
+                
+                // Draw ascendant line from center to outer circle (bold to stand out)
+                const ascInner = this.polarToCartesian(this.ascendant, 0);
+                const ascOuter = this.polarToCartesian(this.ascendant, this.outerRadius);
+                this.drawLine(ascInner.x, ascInner.y, ascOuter.x, ascOuter.y, this.colors.text, 2);
+            }
+            
+            /**
+             * Draw planets at their positions
+             * Each planet gets:
+             * - White circular background with border (so it's visible even over cusp lines)
+             * - Planet glyph
+             * - Small dot marking exact position
+             */
+            drawPlanets() {
+                for (let [planet, longitude] of Object.entries(this.planets)) {
+                    const pos = this.polarToCartesian(longitude, this.planetRadius);
+                    const glyph = this.planetGlyphs[planet];
+                    
+                    if (glyph) {
+                        // Draw background circle with border (uses theme colors)
+                        this.drawCircle(pos.x, pos.y, 12, this.colors.planetBg, this.colors.planetBorder, 1);
+                        
+                        // Draw planet glyph
+                        this.drawText(glyph, pos.x, pos.y, '20px serif', this.colors.text);
+                        
+                        // Draw small dot at exact position
+                        this.drawCircle(pos.x, pos.y, 2, this.colors.text, 'none', 0);
+                    }
+                }
+            }
+            
+            // ============================================
+            // SVG Drawing Helper Methods
+            // ============================================
+            
+            /**
+             * Draw a circle element
+             */
+            drawCircle(cx, cy, r, fill, stroke, strokeWidth) {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', cx);
+                circle.setAttribute('cy', cy);
+                circle.setAttribute('r', r);
+                circle.setAttribute('fill', fill);
+                circle.setAttribute('stroke', stroke);
+                circle.setAttribute('stroke-width', strokeWidth);
+                this.svg.appendChild(circle);
+            }
+            
+            /**
+             * Draw a line element
+             */
+            drawLine(x1, y1, x2, y2, stroke, strokeWidth) {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', stroke);
+                line.setAttribute('stroke-width', strokeWidth);
+                this.svg.appendChild(line);
+            }
+            
+            /**
+             * Draw a text element
+             */
+            drawText(text, x, y, font, fill, weight = 'normal') {
+                const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textEl.setAttribute('x', x);
+                textEl.setAttribute('y', y);
+                textEl.setAttribute('text-anchor', 'middle');
+                textEl.setAttribute('dominant-baseline', 'middle');
+                textEl.setAttribute('font-family', font.split(' ')[1]);
+                textEl.setAttribute('font-size', font.split(' ')[0]);
+                textEl.setAttribute('fill', fill);
+                textEl.setAttribute('font-weight', weight);
+                textEl.textContent = text;
+                this.svg.appendChild(textEl);
+            }
+        }
+        
+        // ============================================
+        // PWA Service Worker Registration
+        // ============================================
+        
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => console.log('Service Worker registered'))
+                .catch(error => console.log('Service Worker registration failed:', error));
+        }
+        
+        // ============================================
+        // Menu and Navigation
+        // ============================================
+        
+        /**
+         * Toggle the slide-out menu
+         */
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('active');
+        }
+        
+        /**
+         * Show the Manual Chart form
+         */
+        function showManualChart() {
+            document.getElementById('controls').classList.add('active');
+            toggleMenu(); // Close menu after selection
+        }
+        
+        /**
+         * Export the chart as a PNG image
+         */
+        function exportChart() {
+            const svg = document.getElementById('chart');
+            const svgData = new XMLSerializer().serializeToString(svg);
+            
+            // Create a canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size to match SVG viewBox
+            canvas.width = 600;
+            canvas.height = 600;
+            
+            // Detect if dark mode and set background
+            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            ctx.fillStyle = isDarkMode ? '#1a1a1a' : '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Create an image from SVG data
+            const img = new Image();
+            const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(url);
+                
+                // Convert canvas to blob and download
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = 'astro-chart.png';
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                });
+            };
+            
+            img.src = url;
+            toggleMenu(); // Close menu after export
+        }
+        
+        // ============================================
+        // Chart Initialization and Update
+        // ============================================
+        
+        let chart; // Global reference to current chart instance
+        
+        /**
+         * Read input values and redraw the chart
+         * Called on page load and when "Update Chart" button is clicked
+         */
+        function updateChart() {
+            // Collect planet positions from input fields
+            const planets = {
+                sun: parseFloat(document.getElementById('sun').value),
+                moon: parseFloat(document.getElementById('moon').value),
+                mercury: parseFloat(document.getElementById('mercury').value),
+                venus: parseFloat(document.getElementById('venus').value),
+                mars: parseFloat(document.getElementById('mars').value),
+                jupiter: parseFloat(document.getElementById('jupiter').value),
+                saturn: parseFloat(document.getElementById('saturn').value),
+                uranus: parseFloat(document.getElementById('uranus').value),
+                neptune: parseFloat(document.getElementById('neptune').value),
+                pluto: parseFloat(document.getElementById('pluto').value)
+            };
+            
+            const ascendant = parseFloat(document.getElementById('ascendant').value);
+            
+            // Clear existing chart by removing all child elements
+            const chartEl = document.getElementById('chart');
+            while (chartEl.firstChild) {
+                chartEl.removeChild(chartEl.firstChild);
+            }
+            
+            // Create new chart with updated values
+            chart = new AstroChart('chart', planets, ascendant);
+        }
+        
+        // Initialize chart when page loads
+        updateChart();
+    </script>
+</body>
+</html>
