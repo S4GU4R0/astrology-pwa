@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natal Chart Report Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 1in;
+            background: #f5f5f5;
+        }
+        .container {
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 24pt;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        h2 {
+            font-size: 18pt;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 1px solid #666;
+            padding-bottom: 5px;
+        }
+        h3 {
+            font-size: 14pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+        h4 {
+            font-size: 12pt;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #e7e6e6;
+            font-weight: bold;
+        }
+        .info-table td:first-child {
+            background-color: #e7e6e6;
+            font-weight: bold;
+            width: 35%;
+        }
+        input[type="text"], 
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .notes {
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+        .section-break {
+            margin: 30px 0;
+            border-top: 2px solid #999;
+        }
+        .button-group {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px 0;
+            border-top: 3px solid #333;
+            border-bottom: 3px solid #333;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14pt;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button.secondary {
+            background: #2196F3;
+        }
+        button.secondary:hover {
+            background: #0b7dda;
+        }
+        .footer {
+            text-align: center;
+            font-style: italic;
+            margin-top: 40px;
+            color: #666;
+        }
+        .hidden {
+            display: none;
+        }
+        .option-section {
+            border-left: 4px solid #2196F3;
+            padding-left: 20px;
+            margin: 20px 0;
+        }
+        .form-only {
+            display: block;
+        }
+        .report-only {
+            display: none;
+        }
+        body.report-mode .form-only {
+            display: none;
+        }
+        body.report-mode .report-only {
+            display: block;
+        }
+        body.report-mode input[type="text"],
+        body.report-mode input[type="number"],
+        body.report-mode textarea {
+            border: none;
+            padding: 0;
+            background: transparent;
+        }
+        body.report-mode input[type="checkbox"],
+        body.report-mode input[type="radio"] {
+            pointer-events: none;
+        }
+        @media print {
+            body {
+                padding: 0;
+                background: #fff;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0.5in;
+            }
+            .button-group {
+                display: none;
+            }
+            .form-only {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>NATAL CHART REPORT</h1>
+
+    <div class="button-group form-only">
+        <button type="button" onclick="generateReport()">Generate Report</button>
+        <button type="button" class="secondary" onclick="saveForm()">Save Form Data</button>
+        <button type="button" class="secondary" onclick="loadForm()">Load Form Data</button>
+    </div>
+
+    <div class="button-group report-only">
+        <button type="button" onclick="backToForm()">Back to Form</button>
+        <button type="button" class="secondary" onclick="window.print()">Print Report</button>
+        <button type="button" class="secondary" onclick="downloadReport()">Download HTML</button>
+    </div>
+
+    <form id="natalForm">
+        <table class="info-table">
+            <tr>
+                <td>Client Name:</td>
+                <td><input type="text" id="clientName" name="clientName"></td>
+            </tr>
+            <tr>
+                <td>Birth Date & Time:</td>
+                <td><input type="text" id="birthDateTime" name="birthDateTime"></td>
+            </tr>
+            <tr>
+                <td>Birth Location:</td>
+                <td><input type="text" id="birthLocation" name="birthLocation"></td>
+            </tr>
+        </table>
+
+        <div class="section-break"></div>
+
+        <h2>I. FOUNDATIONAL CHART ANALYSIS</h2>
+        <p class="notes">Complete these core calculations before proceeding to interpretation</p>
+
+        <h3>A. Sect Determination</h3>
+        <table class="info-table">
+            <tr>
+                <td>Chart Sect:</td>
+                <td class="checkbox-group">
+                    <label><input type="radio" name="chartSect" value="Day"> Day (Sun above horizon)</label>
+                    <label><input type="radio" name="chartSect" value="Night"> Night (Sun below horizon)</label>
+                </td>
+            </tr>
+            <tr>
+                <td>Sect Light:</td>
+                <td><input type="text" id="sectLight" name="sectLight"></td>
+            </tr>
+            <tr>
+                <td>Planets in Sect:</td>
+                <td><input type="text" id="planetsInSect" name="planetsInSect"></td>
+            </tr>
+            <tr>
+                <td>Planets Contrary to Sect:</td>
+                <td><input type="text" id="planetsContraryToSect" name="planetsContraryToSect"></td>
+            </tr>
+        </table>
+
+        <h3>B. Chart Ruler & Rising Sign</h3>
+        <table class="info-table">
+            <tr>
+                <td>Ascending Sign:</td>
+                <td><input type="text" id="ascendingSign" name="ascendingSign"></td>
+            </tr>
+            <tr>
+                <td>Chart Ruler (Domicile Lord):</td>
+                <td><input type="text" id="chartRuler" name="chartRuler"></td>
+            </tr>
+            <tr>
+                <td>Chart Ruler Placement:</td>
+                <td>
+                    Sign: <input type="text" id="chartRulerSign" name="chartRulerSign" style="width: 30%; display: inline-block;">
+                    Place: <input type="text" id="chartRulerPlace" name="chartRulerPlace" style="width: 30%; display: inline-block;">
+                    Condition: <input type="text" id="chartRulerCondition" name="chartRulerCondition" style="width: 30%; display: inline-block;">
+                </td>
+            </tr>
+        </table>
+
+        <h3>C. Triplicity Lords of Sect Light</h3>
+        <p class="notes">These rulers divide and govern the life span according to Dorotheus</p>
+        <table>
+            <tr>
+                <th>First Lord (Early Life)</th>
+                <th>Second Lord (Middle Life)</th>
+                <th>Participating Lord</th>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Planet:</strong> <input type="text" id="tripFirst" name="tripFirst"><br>
+                    <strong>Placement:</strong> <input type="text" id="tripFirstPlace" name="tripFirstPlace"><br>
+                    <strong>Condition:</strong> <input type="text" id="tripFirstCond" name="tripFirstCond">
+                </td>
+                <td>
+                    <strong>Planet:</strong> <input type="text" id="tripSecond" name="tripSecond"><br>
+                    <strong>Placement:</strong> <input type="text" id="tripSecondPlace" name="tripSecondPlace"><br>
+                    <strong>Condition:</strong> <input type="text" id="tripSecondCond" name="tripSecondCond">
+                </td>
+                <td>
+                    <strong>Planet:</strong> <input type="text" id="tripPart" name="tripPart"><br>
+                    <strong>Placement:</strong> <input type="text" id="tripPartPlace" name="tripPartPlace"><br>
+                    <strong>Condition:</strong> <input type="text" id="tripPartCond" name="tripPartCond">
+                </td>
+            </tr>
+        </table>
+
+        <h3>D. Four Principal Lots</h3>
+        <table>
+            <tr>
+                <th>Lot of Fortune</th>
+                <th>Lot of Spirit</th>
+                <th>Lot of Eros</th>
+                <th>Lot of Necessity</th>
+            </tr>
+            <tr>
+                <td>
+                    Sign/Place: <input type="text" id="lotFortune" name="lotFortune"><br>
+                    Lord: <input type="text" id="lotFortuneLord" name="lotFortuneLord">
+                </td>
+                <td>
+                    Sign/Place: <input type="text" id="lotSpirit" name="lotSpirit"><br>
+                    Lord: <input type="text" id="lotSpiritLord" name="lotSpiritLord">
+                </td>
+                <td>
+                    Sign/Place: <input type="text" id="lotEros" name="lotEros"><br>
+                    Lord: <input type="text" id="lotErosLord" name="lotErosLord">
+                </td>
+                <td>
+                    Sign/Place: <input type="text" id="lotNecessity" name="lotNecessity"><br>
+                    Lord: <input type="text" id="lotNecessityLord" name="lotNecessityLord">
+                </td>
+            </tr>
+        </table>
+
+        <div class="section-break"></div>
+
+        <h2>II. CHART DELINEATION</h2>
+        <p><strong>Choose your organizational approach:</strong></p>
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="optionA" name="optionA"> OPTION A: Topic-by-Topic (Ptolemy's Method)</label><br>
+            <label><input type="checkbox" id="optionB" name="optionB"> OPTION B: House-by-House Systematic</label><br>
+            <label><input type="checkbox" id="optionC" name="optionC"> OPTION C: Triplicity-Based (Dorotheus' Method)</label>
+        </div>
+
+        <div class="option-section">
+            <h3>OPTION A: Topic-by-Topic Analysis (Ptolemy)</h3>
+            <p class="notes">Organized by when topics become relevant in life</p>
+
+            <h4>1. Prenatal Matters</h4>
+            <p><strong>Parents:</strong></p>
+            <p>Sun (father): <input type="text" id="ptolemyFather" name="ptolemyFather"></p>
+            <p>Moon (mother): <input type="text" id="ptolemyMother" name="ptolemyMother"></p>
+            <p>Saturn (general): <input type="text" id="ptolemySaturn" name="ptolemySaturn"></p>
+
+            <p><strong>Siblings:</strong></p>
+            <p>Mercury & 3rd place: <input type="text" id="ptolemySiblings" name="ptolemySiblings"></p>
+
+            <h4>2. Matters at Birth</h4>
+            <p><strong>Physical Constitution:</strong></p>
+            <p>Ascendant & its ruler: <input type="text" id="ptolemyConstitution" name="ptolemyConstitution"></p>
+
+            <h4>3. Length of Life</h4>
+            <p><strong>Hyleg (Life-Giver):</strong> <input type="text" id="ptolemyHyleg" name="ptolemyHyleg"></p>
+            <p><strong>Alchocoden (Life Span Ruler):</strong> <input type="text" id="ptolemyAlchocoden" name="ptolemyAlchocoden"></p>
+
+            <h4>4. Qualities of Mind</h4>
+            <p>Mercury & Moon analysis: <input type="text" id="ptolemyMind" name="ptolemyMind"></p>
+
+            <h4>5. Material Fortune</h4>
+            <p>Lot of Fortune & 2nd place: <input type="text" id="ptolemyFortune" name="ptolemyFortune"></p>
+
+            <h4>6. Career & Rank</h4>
+            <p>10th place, Lot of Spirit, Sun & Saturn: <input type="text" id="ptolemyCareer" name="ptolemyCareer"></p>
+
+            <h4>7. Marriage</h4>
+            <p>Venus (men) or Sun/Mars (women), 7th place: <input type="text" id="ptolemyMarriage" name="ptolemyMarriage"></p>
+
+            <h4>8. Children</h4>
+            <p>Jupiter, Moon, 5th place: <input type="text" id="ptolemyChildren" name="ptolemyChildren"></p>
+        </div>
+
+        <div class="option-section">
+            <h3>OPTION B: House-by-House Systematic Analysis</h3>
+            <p class="notes">Examine each place in order of strength: angles → succedent → cadent</p>
+
+            <h4>Angular Places (Most Powerful)</h4>
+            <p><strong>1st Place (Hour-Marker) - Life, Body, Self:</strong><br>
+            <input type="text" id="house1" name="house1" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>10th Place (Midheaven) - Career, Reputation, Actions:</strong><br>
+            <input type="text" id="house10" name="house10" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>7th Place (Setting) - Marriage, Partnerships:</strong><br>
+            <input type="text" id="house7" name="house7" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>4th Place (Subterranean) - Parents, Foundations, Home:</strong><br>
+            <input type="text" id="house4" name="house4" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <h4>Succedent Places</h4>
+            <p><strong>11th Place (Good Spirit) - Friends, Hopes, Acquisition:</strong><br>
+            <input type="text" id="house11" name="house11" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>5th Place (Good Fortune) - Children, Pleasure:</strong><br>
+            <input type="text" id="house5" name="house5" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>2nd Place (Gate of Hades) - Resources, Livelihood:</strong><br>
+            <input type="text" id="house2" name="house2" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>8th Place (Idle) - Death, Others' Resources:</strong><br>
+            <input type="text" id="house8" name="house8" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <h4>Cadent Places (Weakest)</h4>
+            <p><strong>9th Place (God) - Travel, Religion, Higher Learning:</strong><br>
+            <input type="text" id="house9" name="house9" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>3rd Place (Goddess) - Siblings, Short Journeys:</strong><br>
+            <input type="text" id="house3" name="house3" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>6th Place (Bad Fortune) - Illness, Enemies, Servants:</strong><br>
+            <input type="text" id="house6" name="house6" placeholder="Sign, Planets, Ruler condition"></p>
+
+            <p><strong>12th Place (Bad Spirit) - Hidden Enemies, Confinement:</strong><br>
+            <input type="text" id="house12" name="house12" placeholder="Sign, Planets, Ruler condition"></p>
+        </div>
+
+        <div class="option-section">
+            <h3>OPTION C: Triplicity-Based Analysis (Dorotheus)</h3>
+            <p class="notes">For each topic, identify significator → examine its three triplicity rulers → assess placement and condition</p>
+
+            <h4>Parents</h4>
+            <p><strong>Father (Sun's triplicity lords):</strong></p>
+            <p>First lord (early relationship): <input type="text" id="dorFatherFirst" name="dorFatherFirst"></p>
+            <p>Second lord (later relationship): <input type="text" id="dorFatherSecond" name="dorFatherSecond"></p>
+            <p>Participating lord: <input type="text" id="dorFatherPart" name="dorFatherPart"></p>
+
+            <p><strong>Mother (Moon's triplicity lords):</strong></p>
+            <p>First lord (early relationship): <input type="text" id="dorMotherFirst" name="dorMotherFirst"></p>
+            <p>Second lord (later relationship): <input type="text" id="dorMotherSecond" name="dorMotherSecond"></p>
+            <p>Participating lord: <input type="text" id="dorMotherPart" name="dorMotherPart"></p>
+
+            <h4>Marriage</h4>
+            <p><strong>Significator (Venus/Sun/Mars as appropriate):</strong></p>
+            <p>First lord: <input type="text" id="dorMarriageFirst" name="dorMarriageFirst"></p>
+            <p>Second lord: <input type="text" id="dorMarriageSecond" name="dorMarriageSecond"></p>
+            <p>Participating lord: <input type="text" id="dorMarriagePart" name="dorMarriagePart"></p>
+            <p>7th place condition: <input type="text" id="dorMarriage7th" name="dorMarriage7th"></p>
+
+            <h4>Children</h4>
+            <p><strong>Significator (Jupiter's triplicity lords):</strong></p>
+            <p>First lord: <input type="text" id="dorChildrenFirst" name="dorChildrenFirst"></p>
+            <p>Second lord: <input type="text" id="dorChildrenSecond" name="dorChildrenSecond"></p>
+            <p>Participating lord: <input type="text" id="dorChildrenPart" name="dorChildrenPart"></p>
+            <p>5th place condition: <input type="text" id="dorChildren5th" name="dorChildren5th"></p>
+
+            <h4>Livelihood & Fortune</h4>
+            <p><strong>Lot of Fortune's triplicity lords:</strong></p>
+            <p>First lord: <input type="text" id="dorFortuneFirst" name="dorFortuneFirst"></p>
+            <p>Second lord: <input type="text" id="dorFortuneSecond" name="dorFortuneSecond"></p>
+            <p>Participating lord: <input type="text" id="dorFortunePart" name="dorFortunePart"></p>
+            <p>11th from Fortune (Place of Acquisition): <input type="text" id="dorFortune11th" name="dorFortune11th"></p>
+        </div>
+
+        <div class="section-break"></div>
+
+        <h2>III. PLANETARY CONDITIONS</h2>
+        <p class="notes">Assess each planet through multiple factors</p>
+
+        <table>
+            <tr>
+                <th>Planet</th>
+                <th>Sign</th>
+                <th>Place</th>
+                <th>Dignity</th>
+                <th>Sect</th>
+                <th>Aspects</th>
+            </tr>
+            <tr>
+                <td><strong>Sun</strong></td>
+                <td><input type="text" id="sunSign" name="sunSign"></td>
+                <td><input type="text" id="sunPlace" name="sunPlace"></td>
+                <td><input type="text" id="sunDignity" name="sunDignity"></td>
+                <td><input type="text" id="sunSect" name="sunSect"></td>
+                <td><input type="text" id="sunAspects" name="sunAspects"></td>
+            </tr>
+            <tr>
+                <td><strong>Moon</strong></td>
+                <td><input type="text" id="moonSign" name="moonSign"></td>
+                <td><input type="text" id="moonPlace" name="moonPlace"></td>
+                <td><input type="text" id="moonDignity" name="moonDignity"></td>
+                <td><input type="text" id="moonSect" name="moonSect"></td>
+                <td><input type="text" id="moonAspects" name="moonAspects"></td>
+            </tr>
+            <tr>
+                <td><strong>Mercury</strong></td>
+                <td><input type="text" id="mercurySign" name="mercurySign"></td>
+                <td><input type="text" id="mercuryPlace" name="mercuryPlace"></td>
+                <td><input type="text" id="mercuryDignity" name="mercuryDignity"></td>
+                <td><input type="text" id="mercurySect" name="mercurySect"></td>
+                <td><input type="text" id="mercuryAspects" name="mercuryAspects"></td>
+            </tr>
+            <tr>
+                <td><strong>Venus</strong></td>
+                <td><input type="text" id="venusSign" name="venusSign"></td>
+                <td><input type="text" id="venusPlace" name="venusPlace"></td>
+                <td><input type="text" id="venusDignity" name="venusDignity"></td>
+                <td><input type="text" id="venusSect" name="venusSect"></td>
+                <td><input type="text" id="venusAspects" name="venusAspects"></td>
+            </tr>
+            <tr>
+                <td><strong>Mars</strong></td>
+                <td><input type="text" id="marsSign" name="marsSign"></td>
+                <td><input type="text" id="marsPlace" name="marsPlace"></td>
+                <td><input type="text" id="marsDignity" name="marsDignity"></td>
+                <td><input type="text" id="marsSect" name="marsSect"></td>
+                <td><input type="text" id="marsAspects" name="marsAspects"></td>
+            </tr>
+            <tr>
+                <td><strong>Jupiter</strong></td>
+                <td><input type="text" id="jupiterSign" name="jupiterSign"></td>
+                <td><input type="text" id="jupiterPlace" name="jupiterPlace"></td>
+                <td><input type="text" id="jupiterDignity" name="jupiterDignity"></td>
+                <td><input type="text" id="jupiterSect" name="jupiterSect"></td>
+                <td><input type="text" id="jupiterAspects" name="jupiterAspects"></td>
+            </tr>
+            <tr>
+                <td><strong>Saturn</strong></td>
+                <td><input type="text" id="saturnSign" name="saturnSign"></td>
+                <td><input type="text" id="saturnPlace" name="saturnPlace"></td>
+                <td><input type="text" id="saturnDignity" name="saturnDignity"></td>
+                <td><input type="text" id="saturnSect" name="saturnSect"></td>
+                <td><input type="text" id="saturnAspects" name="saturnAspects"></td>
+            </tr>
+        </table>
+
+        <div class="section-break"></div>
+
+        <h2>IV. SYNTHESIS & INTERPRETATION</h2>
+        <p class="notes">Integrate findings from the selected organizational method with planetary conditions</p>
+
+        <textarea id="synthesis" name="synthesis" rows="15"></textarea>
+
+        <div class="section-break"></div>
+
+        <h2>V. TIME-LORD TECHNIQUES (OPTIONAL)</h2>
+        <p class="notes">For predictive work, note current periods</p>
+
+        <p><strong>Zodiacal Releasing from Fortune:</strong><br>
+        Current period: <input type="text" id="zrPeriod" name="zrPeriod" style="width: 45%; display: inline-block;"> 
+        Dates: <input type="text" id="zrDates" name="zrDates" style="width: 45%; display: inline-block;"></p>
+
+        <p><strong>Annual Profections:</strong><br>
+        Current year ruler: <input type="text" id="profRuler" name="profRuler" style="width: 45%; display: inline-block;"> 
+        Age: <input type="number" id="profAge" name="profAge" style="width: 45%; display: inline-block;"></p>
+
+        <p><strong>Primary Directions:</strong><br>
+        <input type="text" id="primDirect" name="primDirect"></p>
+
+        <div class="footer">
+            <p>— End of Template —</p>
+        </div>
+    </form>
+</div>
+
+<script>
+    function generateReport() {
+        // Disable all form inputs
+        document.body.classList.add('report-mode');
+        
+        // Scroll to top
+        window.scrollTo(0, 0);
+    }
+
+    function backToForm() {
+        document.body.classList.remove('report-mode');
+    }
+
+    function saveForm() {
+        const formData = new FormData(document.getElementById('natalForm'));
+        const data = {};
+        
+        for (let [key, value] of formData.entries()) {
+            data[key] = value;
+        }
+        
+        // Get checkbox states
+        data.chartSect = document.querySelector('input[name="chartSect"]:checked')?.value || '';
+        data.optionA = document.getElementById('optionA').checked;
+        data.optionB = document.getElementById('optionB').checked;
+        data.optionC = document.getElementById('optionC').checked;
+        
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'natal-chart-data.json';
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function loadForm() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    // Fill in all text inputs
+                    for (let key in data) {
+                        const element = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
+                        if (element) {
+                            if (element.type === 'checkbox') {
+                                element.checked = data[key];
+                            } else if (element.type === 'radio') {
+                                if (element.value === data[key]) {
+                                    element.checked = true;
+                                }
+                            } else {
+                                element.value = data[key];
+                            }
+                        }
+                    }
+                    
+                    alert('Form data loaded successfully!');
+                } catch (error) {
+                    alert('Error loading file: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    function downloadReport() {
+        const clone = document.cloneNode(true);
+        
+        // Remove the form buttons from clone
+        const buttons = clone.querySelectorAll('.button-group');
+        buttons.forEach(btn => btn.remove());
+        
+        // Add report mode styling
+        clone.body.classList.add('report-mode');
+        
+        // Convert to string
+        const htmlContent = '<!DOCTYPE html>\n' + clone.documentElement.outerHTML;
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        
+        const clientName = document.getElementById('clientName').value || 'Client';
+        link.href = url;
+        link.download = `natal-report-${clientName.replace(/\s+/g, '-')}.html`;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+</body>
+</html>
