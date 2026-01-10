@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>End-to-End Test - Astrodex</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+        h1 { color: #333; }
+        .test-section { border: 1px solid #ddd; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .test-section h2 { margin-top: 0; color: #0066cc; }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+        .pending { color: orange; font-weight: bold; }
+        pre { background: #f5f5f5; padding: 1rem; overflow-x: auto; }
+        button { padding: 0.5rem 1rem; margin: 0.5rem 0; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #004c99; }
+        #results { margin-top: 1rem; }
+        .result-item { padding: 0.5rem; margin: 0.25rem 0; border-left: 3px solid #ddd; }
+        .result-item.pass { border-color: green; background: #f0fff0; }
+        .result-item.fail { border-color: red; background: #fff0f0; }
+    </style>
+</head>
+<body>
+    <h1>End-to-End Test Suite - Astrodex</h1>
+
+    <div class="test-section">
+        <h2>Test 1: Chart Data Persistence</h2>
+        <p>Tests localStorage save/load functionality</p>
+        <button onclick="testChartDataPersistence()">Run Test</button>
+        <div id="test1-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Calculation Functions</h2>
+        <p>Tests astronomical calculation functions with known data</p>
+        <p><strong>Test Data:</strong> 12/28/1989 11:36pm, Orange, CA (33.7879°N, 117.8531°W)</p>
+        <p><strong>Expected:</strong> Sun, Moon, Mercury in Capricorn</p>
+        <button onclick="testCalculationFunctions()">Run Test</button>
+        <div id="test2-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Module Imports</h2>
+        <p>Tests that all modules are available</p>
+        <button onclick="testModuleImports()">Run Test</button>
+        <div id="test3-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: View Manager</h2>
+        <p>Tests view switching functionality (requires main app)</p>
+        <button onclick="testViewManager()">Run Test</button>
+        <div id="test4-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: UI Helpers</h2>
+        <p>Tests loading indicators and toast notifications</p>
+        <button onclick="testUIHelpers()">Run Test</button>
+        <div id="test5-results"></div>
+    </div>
+
+    <script src="js/ui-helpers.js"></script>
+    <script src="js/error-handling.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+
+    <script type="module">
+        import { GeocodingService } from './js/geocoding-service.js';
+        import {
+            calculatePlanetaryPositions,
+            calculatePlanetaryMotion,
+            calculateSect,
+            longitudeToSign,
+            checkCombustion,
+            calculateAllAspects,
+            calculateOverallTestimony,
+            calculateSectBeneficMalefic
+        } from './js/astro-calculations.js';
+
+        // Make imports globally available for tests
+        window.testModules = {
+            GeocodingService,
+            calculatePlanetaryPositions,
+            calculatePlanetaryMotion,
+            calculateSect,
+            longitudeToSign,
+            checkCombustion,
+            calculateAllAspects,
+            calculateOverallTestimony,
+            calculateSectBeneficMalefic
+        };
+
+        // Signal that modules are loaded
+        window.modulesLoaded = true;
+        console.log('Test page loaded. Modules available:', window.testModules);
+    </script>
+
+    <script>
+        // Helper function for logging results
+        function logResult(testId, message, passed) {
+            const resultsDiv = document.getElementById(`${testId}-results`);
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item ${passed ? 'pass' : 'fail'}`;
+            resultItem.textContent = `${passed ? '✓' : '✗'} ${message}`;
+            resultsDiv.appendChild(resultItem);
+        }
+
+        // Test 1: Chart Data Persistence
+        function testChartDataPersistence() {
+            const resultsDiv = document.getElementById('test1-results');
+            resultsDiv.innerHTML = '';
+
+            try {
+                // Test save
+                const testData = {
+                    name: 'Test User',
+                    date: '1989-12-28',
+                    time: '23:36',
+                    location: 'Orange, CA'
+                };
+
+                localStorage.setItem('astrodex_chart_data', JSON.stringify(testData));
+                logResult('test1', 'Data saved to localStorage', true);
+
+                // Test load
+                const loaded = JSON.parse(localStorage.getItem('astrodex_chart_data'));
+                const matches = loaded.name === testData.name &&
+                                loaded.date === testData.date &&
+                                loaded.time === testData.time &&
+                                loaded.location === testData.location;
+
+                logResult('test1', 'Data loaded from localStorage', matches);
+                logResult('test1', `Loaded data: ${JSON.stringify(loaded)}`, matches);
+
+                // Clean up
+                localStorage.removeItem('astrodex_chart_data');
+                logResult('test1', 'Cleanup completed', true);
+
+            } catch (error) {
+                logResult('test1', `Error: ${error.message}`, false);
+            }
+        }
+
+        // Test 2: Calculation Functions
+        async function testCalculationFunctions() {
+            const resultsDiv = document.getElementById('test2-results');
+            resultsDiv.innerHTML = '';
+
+            try {
+                if (!window.testModules) {
+                    logResult('test2', 'Modules not loaded yet', false);
+                    return;
+                }
+
+                const { calculatePlanetaryPositions, longitudeToSign } = window.testModules;
+
+                // Test data: 12/28/1989 11:36pm
+                const testDate = new Date('1989-12-28T23:36:00');
+                const latitude = 33.7879;
+                const longitude = -117.8531;
+
+                logResult('test2', 'Starting calculations...', true);
+
+                const positions = calculatePlanetaryPositions(testDate, latitude, longitude);
+                logResult('test2', 'Planetary positions calculated', true);
+
+                // Check Sun position
+                const sunSign = longitudeToSign(positions.Sun.longitude);
+                const sunInCapricorn = sunSign.sign === 'Capricorn';
+                logResult('test2', `Sun: ${sunSign.formattedPosition}`, sunInCapricorn);
+
+                // Check Moon position
+                const moonSign = longitudeToSign(positions.Moon.longitude);
+                const moonInCapricorn = moonSign.sign === 'Capricorn';
+                logResult('test2', `Moon: ${moonSign.formattedPosition}`, moonInCapricorn);
+
+                // Check Mercury position
+                const mercurySign = longitudeToSign(positions.Mercury.longitude);
+                const mercuryInCapricorn = mercurySign.sign === 'Capricorn';
+                logResult('test2', `Mercury: ${mercurySign.formattedPosition}`, mercuryInCapricorn);
+
+                const allPassed = sunInCapricorn && moonInCapricorn && mercuryInCapricorn;
+                logResult('test2', `All planets in expected signs: ${allPassed ? 'PASS' : 'FAIL'}`, allPassed);
+
+            } catch (error) {
+                logResult('test2', `Error: ${error.message}`, false);
+                console.error('Test 2 error:', error);
+            }
+        }
+
+        // Test 3: Module Imports
+        function testModuleImports() {
+            const resultsDiv = document.getElementById('test3-results');
+            resultsDiv.innerHTML = '';
+
+            const modules = [
+                'GeocodingService',
+                'calculatePlanetaryPositions',
+                'calculatePlanetaryMotion',
+                'calculateSect',
+                'longitudeToSign',
+                'checkCombustion',
+                'calculateAllAspects',
+                'calculateOverallTestimony',
+                'calculateSectBeneficMalefic'
+            ];
+
+            modules.forEach(moduleName => {
+                const available = window.testModules && window.testModules[moduleName];
+                logResult('test3', `${moduleName}: ${available ? 'Available' : 'Missing'}`, available);
+            });
+        }
+
+        // Test 4: View Manager
+        function testViewManager() {
+            const resultsDiv = document.getElementById('test4-results');
+            resultsDiv.innerHTML = '';
+
+            // ViewManager is in parent window when running in iframe
+            const vm = window.parent.ViewManager || window.ViewManager;
+            const vmAvailable = typeof vm !== 'undefined';
+            logResult('test4', 'ViewManager available', vmAvailable);
+
+            if (vmAvailable) {
+                logResult('test4', 'ViewManager.loadView method exists', typeof vm.loadView === 'function');
+                logResult('test4', `Current view: ${vm.currentView}`, true);
+            } else {
+                logResult('test4', 'ViewManager not loaded (open test via Tools menu)', false);
+            }
+        }
+
+        // Test 5: UI Helpers
+        function testUIHelpers() {
+            const resultsDiv = document.getElementById('test5-results');
+            resultsDiv.innerHTML = '';
+
+            const functions = ['showLoadingSpinner', 'hideLoadingSpinner', 'showProgressBar', 'showToast'];
+
+            functions.forEach(funcName => {
+                const available = typeof window[funcName] === 'function';
+                logResult('test5', `${funcName}: ${available ? 'Available' : 'Missing'}`, available);
+            });
+
+            // Test toast notification
+            if (typeof showToast === 'function') {
+                showToast('Test notification', 'info');
+                logResult('test5', 'Toast notification triggered', true);
+            }
+        }
+    </script>
+</body>
+</html>

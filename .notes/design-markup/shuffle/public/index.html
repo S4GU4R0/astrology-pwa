@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Page title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&display=swap">
+    <link rel="stylesheet" href="css/tailwind/tailwind.min.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="shuffle-for-tailwind.png">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+</head>
+<body class="antialiased bg-body text-body font-body">
+    <div class="">
+                
+      <div class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+          
+          <!-- Tab Navigation -->
+          <div class="flex flex-wrap border-b border-gray-300 mb-6 overflow-x-auto">
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none bg-gray-50 border-b-2 border-blue-600 text-blue-600" data-tab="sun">Sun</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="moon">Moon</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="mercury">Mercury</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="venus">Venus</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="mars">Mars</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="jupiter">Jupiter</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="saturn">Saturn</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="uranus">Uranus</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="neptune">Neptune</button>
+            <button class="zodiac-tab-btn px-4 py-3 text-sm font-semibold leading-none text-gray-600 hover:text-blue-600 hover:bg-gray-50" data-tab="pluto">Pluto</button>
+          </div>
+          <!-- Tab Content -->
+          <div class="zodiac-tab-content-container">
+            <!-- Sun Tab -->
+            <div class="zodiac-tab-content" data-content="sun">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">The Sun</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1532693322450-2cb5c511067d?w=600&amp;h=400&amp;fit=crop" alt="Sun">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Core Essence</h5>
+                    <p class="text-gray-700 mb-4 text-sm">The Sun represents your core identity, ego, and vital life force. It symbolizes your conscious mind, willpower, and the essence of who you are at your most fundamental level.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Leo</li>
+                      <li>• Element: Fire</li>
+                      <li>• Represents: Self, vitality, leadership</li>
+                      <li>• Cycle: 365 days through zodiac</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Moon Tab -->
+            <div class="zodiac-tab-content hidden" data-content="moon">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">The Moon</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1509803874385-db7c23652552?w=600&amp;h=400&amp;fit=crop" alt="Moon">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Emotional Core</h5>
+                    <p class="text-gray-700 mb-4 text-sm">The Moon governs your emotional nature, instincts, and subconscious patterns. It reflects your inner world, emotional responses, and nurturing qualities.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Cancer</li>
+                      <li>• Element: Water</li>
+                      <li>• Represents: Emotions, intuition, motherhood</li>
+                      <li>• Cycle: 28 days through zodiac</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Mercury Tab -->
+            <div class="zodiac-tab-content hidden" data-content="mercury">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Mercury</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=600&amp;h=400&amp;fit=crop" alt="Mercury">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Communication &amp; Mind</h5>
+                    <p class="text-gray-700 mb-4 text-sm">Mercury rules communication, intellect, and mental processes. It governs how you think, learn, express yourself, and process information.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Gemini and Virgo</li>
+                      <li>• Element: Air/Earth</li>
+                      <li>• Represents: Communication, thinking, travel</li>
+                      <li>• Cycle: 88 days around Sun</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Venus Tab -->
+            <div class="zodiac-tab-content hidden" data-content="venus">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Venus</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1614313913007-2b4ae8ce32d6?w=600&amp;h=400&amp;fit=crop" alt="Venus">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Love &amp; Beauty</h5>
+                    <p class="text-gray-700 mb-4 text-sm">Venus governs love, beauty, harmony, and attraction. It represents your values, aesthetic preferences, and how you express affection.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Taurus and Libra</li>
+                      <li>• Element: Earth/Air</li>
+                      <li>• Represents: Love, beauty, pleasure, values</li>
+                      <li>• Cycle: 225 days around Sun</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Mars Tab -->
+            <div class="zodiac-tab-content hidden" data-content="mars">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Mars</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=600&amp;h=400&amp;fit=crop" alt="Mars">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Action &amp; Drive</h5>
+                    <p class="text-gray-700 mb-4 text-sm">Mars represents your drive, ambition, passion, and assertiveness. It governs how you take action, compete, and express anger or desire.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Aries (and traditionally Scorpio)</li>
+                      <li>• Element: Fire</li>
+                      <li>• Represents: Action, desire, courage, aggression</li>
+                      <li>• Cycle: 687 days around Sun</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Jupiter Tab -->
+            <div class="zodiac-tab-content hidden" data-content="jupiter">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Jupiter</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1610296669228-602fa827fc1f?w=600&amp;h=400&amp;fit=crop" alt="Jupiter">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Expansion &amp; Wisdom</h5>
+                    <p class="text-gray-700 mb-4 text-sm">Jupiter is the planet of expansion, growth, wisdom, and good fortune. It represents optimism, higher learning, philosophy, and abundance.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Sagittarius (and traditionally Pisces)</li>
+                      <li>• Element: Fire</li>
+                      <li>• Represents: Luck, growth, wisdom, prosperity</li>
+                      <li>• Cycle: 12 years through zodiac</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Saturn Tab -->
+            <div class="zodiac-tab-content hidden" data-content="saturn">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Saturn</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1614732118584-e57c04386f09?w=600&amp;h=400&amp;fit=crop" alt="Saturn">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Structure &amp; Discipline</h5>
+                    <p class="text-gray-700 mb-4 text-sm">Saturn represents structure, discipline, responsibility, and life lessons. It governs boundaries, limitations, and the wisdom gained through challenges.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Capricorn (and traditionally Aquarius)</li>
+                      <li>• Element: Earth</li>
+                      <li>• Represents: Discipline, karma, time, mastery</li>
+                      <li>• Cycle: 29.5 years through zodiac</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Uranus Tab -->
+            <div class="zodiac-tab-content hidden" data-content="uranus">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Uranus</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1614732277850-6bb5c0f8e0b7?w=600&amp;h=400&amp;fit=crop" alt="Uranus">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Innovation &amp; Change</h5>
+                    <p class="text-gray-700 mb-4 text-sm">Uranus is the planet of innovation, rebellion, and sudden change. It represents originality, freedom, technology, and unconventional thinking.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Aquarius</li>
+                      <li>• Element: Air</li>
+                      <li>• Represents: Revolution, awakening, innovation</li>
+                      <li>• Cycle: 84 years through zodiac</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Neptune Tab -->
+            <div class="zodiac-tab-content hidden" data-content="neptune">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Neptune</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=600&amp;h=400&amp;fit=crop" alt="Neptune">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Dreams &amp; Spirituality</h5>
+                    <p class="text-gray-700 mb-4 text-sm">Neptune governs dreams, spirituality, imagination, and transcendence. It represents the mystical, artistic inspiration, and the dissolution of boundaries.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Pisces</li>
+                      <li>• Element: Water</li>
+                      <li>• Represents: Intuition, mysticism, compassion</li>
+                      <li>• Cycle: 165 years through zodiac</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Pluto Tab -->
+            <div class="zodiac-tab-content hidden" data-content="pluto">
+              <div class="bg-gray-50 rounded p-6">
+                <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Pluto</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <img class="rounded w-full" src="https://images.unsplash.com/photo-1614732484003-ef9881555dc3?w=600&amp;h=400&amp;fit=crop" alt="Pluto">
+                  </div>
+                  <div>
+                    <h5 class="text-lg mb-2 leading-tight font-semibold font-heading">Transformation &amp; Power</h5>
+                    <p class="text-gray-700 mb-4 text-sm">Pluto represents transformation, power, regeneration, and deep psychological processes. It governs death and rebirth, hidden truths, and profound change.</p>
+                    <h6 class="mb-2 leading-tight font-semibold font-heading">Key Attributes</h6>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Ruler of Scorpio</li>
+                      <li>• Element: Water</li>
+                      <li>• Represents: Power, transformation, rebirth</li>
+                      <li>• Cycle: 248 years through zodiac</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+                
+      <div class="max-w-4xl mx-auto p-6 bg-white">
+        <div class="mb-8">
+          
+          <p class="mb-2 leading-relaxed text-gray-600">Traditional astrology planetary dignities and debilities as per Demetra George's framework</p>
+        </div>
+        <!-- Planet Selection -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Planet</label>
+          <div class="relative">
+            <select class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-50 rounded outline-none" disabled>
+              <option>Sun</option>
+              <option>Moon</option>
+              <option>Mercury</option>
+              <option>Venus</option>
+              <option>Mars</option>
+              <option>Jupiter</option>
+              <option>Saturn</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- Sign Placement -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Sign Placement</label>
+          <div class="relative">
+            <select class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-50 rounded outline-none" disabled>
+              <option>Aries</option>
+              <option>Taurus</option>
+              <option>Gemini</option>
+              <option>Cancer</option>
+              <option>Leo</option>
+              <option>Virgo</option>
+              <option>Libra</option>
+              <option>Scorpio</option>
+              <option>Sagittarius</option>
+              <option>Capricorn</option>
+              <option>Aquarius</option>
+              <option>Pisces</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Essential Dignities</h3>
+        <!-- Domicile -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Domicile (Rulership)</label>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="domicile" value="ruler" checked disabled>
+              <span class="ml-1">Ruler (+5)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="domicile" value="none" disabled>
+              <span class="ml-1">Not in Rulership (0)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Exaltation -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Exaltation</label>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="exaltation" value="exalted" disabled>
+              <span class="ml-1">Exalted (+4)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="exaltation" value="none" checked disabled>
+              <span class="ml-1">Not in Exaltation (0)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Triplicity -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Triplicity (Element)</label>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="triplicity" value="day-ruler" disabled>
+              <span class="ml-1">Day Ruler (+3)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="triplicity" value="night-ruler" checked disabled>
+              <span class="ml-1">Night Ruler (+3)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="triplicity" value="participating" disabled>
+              <span class="ml-1">Participating Ruler (+3)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="triplicity" value="none" disabled>
+              <span class="ml-1">Not in Triplicity (0)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Term -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Term (Bound)</label>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="term" value="term" disabled>
+              <span class="ml-1">In Own Term (+2)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="term" value="none" checked disabled>
+              <span class="ml-1">Not in Term (0)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Face/Decan -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Face (Decan)</label>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="face" value="face" disabled>
+              <span class="ml-1">In Own Face (+1)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="face" value="none" checked disabled>
+              <span class="ml-1">Not in Face (0)</span>
+            </label>
+          </div>
+        </div>
+        <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Essential Debilities</h3>
+        <!-- Detriment -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Detriment (Exile)</label>
+          <div class="mb-1">
+            <label>
+              <input type="checkbox" name="detriment" value="detriment" disabled>
+              <span class="ml-1">In Detriment (-5)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Fall -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Fall</label>
+          <div class="mb-1">
+            <label>
+              <input type="checkbox" name="fall" value="fall" checked disabled>
+              <span class="ml-1">In Fall (-4)</span>
+            </label>
+          </div>
+        </div>
+        <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Accidental Conditions</h3>
+        <!-- House Position -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">House Position</label>
+          <div class="relative">
+            <select class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-50 rounded outline-none" disabled>
+              <option>1st House - Angular (+5)</option>
+              <option>2nd House - Succedent (+2)</option>
+              <option>3rd House - Cadent (0)</option>
+              <option>4th House - Angular (+5)</option>
+              <option>5th House - Succedent (+2)</option>
+              <option>6th House - Cadent (0)</option>
+              <option>7th House - Angular (+5)</option>
+              <option>8th House - Succedent (+2)</option>
+              <option>9th House - Cadent (0)</option>
+              <option>10th House - Angular (+5)</option>
+              <option>11th House - Succedent (+2)</option>
+              <option>12th House - Cadent (0)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- Motion -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Motion</label>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="motion" value="direct" checked disabled>
+              <span class="ml-1">Direct (+4)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="motion" value="stationary" disabled>
+              <span class="ml-1">Stationary (0)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="motion" value="retrograde" disabled>
+              <span class="ml-1">Retrograde (-5)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Sect -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Sect (Chart Type)</label>
+          <label class="mr-4">
+            <input type="radio" name="chart-sect" value="day" checked disabled>
+            <span class="ml-1">Day Chart</span>
+          </label>
+          <label>
+            <input type="radio" name="chart-sect" value="night" disabled>
+            <span class="ml-1">Night Chart</span>
+          </label>
+        </div>
+        <!-- Sect of Planet -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Planetary Sect Condition</label>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="planet-sect" value="in-sect" checked disabled>
+              <span class="ml-1">In Sect (+3)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="planet-sect" value="contrary" disabled>
+              <span class="ml-1">Contrary to Sect (-2)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Aspect to Benefics -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Aspect to Benefics (Jupiter/Venus)</label>
+          <div class="mb-1">
+            <label>
+              <input type="checkbox" name="benefic-aspect" value="conjunction" disabled>
+              <span class="ml-1">Conjunction (+5)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="checkbox" name="benefic-aspect" value="trine" checked disabled>
+              <span class="ml-1">Trine (+4)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="checkbox" name="benefic-aspect" value="sextile" disabled>
+              <span class="ml-1">Sextile (+3)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Aspect to Malefics -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Aspect to Malefics (Mars/Saturn)</label>
+          <div class="mb-1">
+            <label>
+              <input type="checkbox" name="malefic-aspect" value="conjunction" disabled>
+              <span class="ml-1">Conjunction (-5)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="checkbox" name="malefic-aspect" value="opposition" disabled>
+              <span class="ml-1">Opposition (-4)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="checkbox" name="malefic-aspect" value="square" checked disabled>
+              <span class="ml-1">Square (-3)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Combustion -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Solar Proximity</label>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="combustion" value="cazimi" disabled>
+              <span class="ml-1">Cazimi (within 17') (+5)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="combustion" value="combust" disabled>
+              <span class="ml-1">Combust (within 8°) (-5)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="combustion" value="under-beams" disabled>
+              <span class="ml-1">Under the Beams (within 15°) (-4)</span>
+            </label>
+          </div>
+          <div class="mb-1">
+            <label>
+              <input type="radio" name="combustion" value="none" checked disabled>
+              <span class="ml-1">Not Affected (0)</span>
+            </label>
+          </div>
+        </div>
+        <!-- Reception -->
+        <div class="mb-6">
+          <label>
+            <input type="checkbox" name="mutual-reception" value="mutual" checked disabled>
+            <span class="ml-1">Mutual Reception (+5)</span>
+          </label>
+        </div>
+        <!-- Hayz -->
+        <div class="mb-6">
+          <label>
+            <input type="checkbox" name="hayz" value="hayz" disabled>
+            <span class="ml-1">In Hayz (+2)</span>
+          </label>
+        </div>
+        <!-- Additional Conditions -->
+        <h3 class="text-3xl mb-4 leading-tight font-semibold font-heading">Additional Conditions</h3>
+        <div class="mb-6">
+          <label>
+            <input type="checkbox" name="oriental" value="oriental" checked disabled>
+            <span class="ml-1">Oriental (rising before Sun) - for Mercury/Venus</span>
+          </label>
+        </div>
+        <div class="mb-6">
+          <label>
+            <input type="checkbox" name="occidental" value="occidental" disabled>
+            <span class="ml-1">Occidental (setting after Sun) - for Mars/Saturn</span>
+          </label>
+        </div>
+        <div class="mb-6">
+          <label>
+            <input type="checkbox" name="feral" value="feral" disabled>
+            <span class="ml-1">Feral (no major aspects)</span>
+          </label>
+        </div>
+        <div class="mb-6">
+          <label>
+            <input type="checkbox" name="besieged" value="besieged" disabled>
+            <span class="ml-1">Besieged (between malefics)</span>
+          </label>
+        </div>
+        <!-- Notes Section -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Notes &amp; Observations</label>
+          <textarea class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-50 rounded outline-none" rows="4" placeholder="Additional notes on planetary condition..." disabled>This planet demonstrates strong essential dignity through its night triplicity rulership, though it is challenged by a square from Saturn indicating some difficulty in expression.</textarea>
+        </div>
+        <!-- Score Summary -->
+        <div class="bg-gray-100 p-4 rounded mb-6">
+          <h3 class="text-2xl mb-3 leading-tight font-semibold font-heading">Dignity Score Summary</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-gray-800 text-sm font-semibold mb-2">Essential Dignities Total</label>
+              <input class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-50 rounded outline-none" type="text" value="+4" disabled>
+            </div>
+            <div>
+              <label class="block text-gray-800 text-sm font-semibold mb-2">Accidental Conditions Total</label>
+              <input class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-50 rounded outline-none" type="text" value="+2" disabled>
+            </div>
+            <div>
+              <label class="block text-gray-800 text-sm font-semibold mb-2">Overall Score</label>
+              <input class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-50 rounded outline-none" type="text" value="+6" disabled>
+            </div>
+          </div>
+        </div>
+        <!-- Final Assessment -->
+        <div class="mb-6">
+          <label class="block text-gray-800 text-sm font-semibold mb-2">Overall Assessment</label>
+          <div class="relative">
+            <select class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-50 rounded outline-none" disabled>
+              <option>Very Strong (+15 or more)</option>
+              <option>Strong (+10 to +14)</option>
+              <option selected>Moderately Strong (+5 to +9)</option>
+              <option>Neutral (0 to +4)</option>
+              <option>Weak (-1 to -5)</option>
+              <option>Very Weak (-6 or less)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-600 leading-relaxed">This form presents planetary conditions according to traditional astrology principles as outlined by Demetra George. All fields are in read-only mode for reference purposes.</p>
+      </div>
+    </div>
+    <script type="text/javascript" src="js/747786.js?v=1768001485" data-custom-component-id="747786"></script>
+</body>
+</html>
+
