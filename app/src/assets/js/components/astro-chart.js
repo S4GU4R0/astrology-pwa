@@ -21,6 +21,9 @@ class AstroChartElement extends HTMLElement {
             pluto: 240
         };
         this.ascendant = 0;
+        this.retrograde = {};
+        this.aspects = [];
+        this.showAspects = true;
     }
 
     connectedCallback() {
@@ -53,6 +56,29 @@ class AstroChartElement extends HTMLElement {
 
     setAscendant(ascendant) {
         this.ascendant = ascendant;
+        this.drawChart();
+    }
+
+    setRetrograde(retrograde) {
+        this.retrograde = retrograde || {};
+        this.drawChart();
+    }
+
+    setAspects(aspects) {
+        this.aspects = aspects || [];
+        this.drawChart();
+    }
+
+    toggleAspects(show) {
+        this.showAspects = show;
+        this.drawChart();
+    }
+
+    setChartData(data) {
+        this.planets = data.planets || this.planets;
+        this.ascendant = data.ascendant !== undefined ? data.ascendant : this.ascendant;
+        this.retrograde = data.retrograde || {};
+        this.aspects = data.aspects || [];
         this.drawChart();
     }
 
@@ -188,6 +214,58 @@ class AstroChartElement extends HTMLElement {
         const ascOuter = polarToCartesian(this.ascendant, outerRadius);
         drawLine(ascInner.x, ascInner.y, ascOuter.x, ascOuter.y, colors.text, 2);
 
+        // Draw aspect lines first (so they appear behind planets)
+        if (this.showAspects && this.aspects && this.aspects.length > 0) {
+            const aspectRadius = planetRadius - 30; // Draw aspects inside the planet ring
+
+            // Aspect colors
+            const aspectColors = {
+                'Conjunction': isDarkMode ? '#ffeb3b' : '#f9a825', // Yellow/gold
+                'Opposition': isDarkMode ? '#ef5350' : '#c62828', // Red
+                'Trine': isDarkMode ? '#66bb6a' : '#2e7d32', // Green
+                'Square': isDarkMode ? '#ef5350' : '#c62828', // Red
+                'Sextile': isDarkMode ? '#42a5f5' : '#1565c0' // Blue
+            };
+
+            // Aspect line styles
+            const aspectStyles = {
+                'Conjunction': { width: 2, dash: '' },
+                'Opposition': { width: 1.5, dash: '' },
+                'Trine': { width: 1.5, dash: '' },
+                'Square': { width: 1.5, dash: '' },
+                'Sextile': { width: 1, dash: '4,4' }
+            };
+
+            for (const aspect of this.aspects) {
+                // Find planet longitudes
+                const planet1Key = aspect.planet1.toLowerCase();
+                const planet2Key = aspect.planet2.toLowerCase();
+                const lon1 = this.planets[planet1Key];
+                const lon2 = this.planets[planet2Key];
+
+                if (lon1 !== undefined && lon2 !== undefined) {
+                    const pos1 = polarToCartesian(lon1, aspectRadius);
+                    const pos2 = polarToCartesian(lon2, aspectRadius);
+
+                    const color = aspectColors[aspect.aspectType] || colors.line;
+                    const style = aspectStyles[aspect.aspectType] || { width: 1, dash: '' };
+
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', pos1.x);
+                    line.setAttribute('y1', pos1.y);
+                    line.setAttribute('x2', pos2.x);
+                    line.setAttribute('y2', pos2.y);
+                    line.setAttribute('stroke', color);
+                    line.setAttribute('stroke-width', style.width);
+                    line.setAttribute('opacity', aspect.isExact ? 1 : 0.6);
+                    if (style.dash) {
+                        line.setAttribute('stroke-dasharray', style.dash);
+                    }
+                    svg.appendChild(line);
+                }
+            }
+        }
+
         // Draw planets
         for (let [planet, longitude] of Object.entries(this.planets)) {
             const pos = polarToCartesian(longitude, planetRadius);
@@ -196,8 +274,26 @@ class AstroChartElement extends HTMLElement {
             if (glyph) {
                 drawCircle(pos.x, pos.y, 12, colors.planetBg, colors.planetBorder, 1);
                 drawText(glyph, pos.x, pos.y, '20px serif', colors.text);
-                drawCircle(pos.x, pos.y, 2, colors.text, 'none', 0);
+
+                // Draw retrograde indicator
+                if (this.retrograde && this.retrograde[planet]) {
+                    // Draw small 'R' below the planet
+                    const retroPos = polarToCartesian(longitude, planetRadius + 18);
+                    drawText('R', retroPos.x, retroPos.y, '10px sans-serif', isDarkMode ? '#ff8a80' : '#d32f2f', 'bold');
+                }
             }
+        }
+
+        // Draw degree markers on planets (small text showing position)
+        for (let [planet, longitude] of Object.entries(this.planets)) {
+            if (longitude === 0 && planet !== 'sun') continue; // Skip unset planets
+
+            const degreePos = polarToCartesian(longitude, planetRadius - 22);
+            const signIndex = Math.floor(longitude / 30);
+            const degInSign = Math.floor(longitude % 30);
+            const signs = ['Ar', 'Ta', 'Ge', 'Ca', 'Le', 'Vi', 'Li', 'Sc', 'Sa', 'Cp', 'Aq', 'Pi'];
+            const degreeText = `${degInSign}${signs[signIndex]}`;
+            drawText(degreeText, degreePos.x, degreePos.y, '8px sans-serif', colors.houseText);
         }
     }
 }

@@ -27,7 +27,6 @@ function createFooterTemplate() {
   return template.content.cloneNode(true);
 }
 
-// Export for use in other modules
 // ES module export
 export { createFooterTemplate };
 export default createFooterTemplate;

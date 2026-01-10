@@ -190,14 +190,19 @@ class AppShellElement extends HTMLElement {
     updateChart(data) {
         const chart = this.shadowRoot.querySelector('astro-chart');
         if (chart) {
-            chart.setPlanets(data.planets);
-            chart.setAscendant(data.ascendant);
+            chart.setChartData({
+                planets: data.planets,
+                ascendant: data.ascendant,
+                retrograde: data.retrograde || {},
+                aspects: data.aspects || []
+            });
         }
 
         const statusBar = this.shadowRoot.querySelector('status-bar');
         if (statusBar) {
-            statusBar.setStatus('Chart updated');
-            setTimeout(() => statusBar.setStatus('Ready'), 2000);
+            const aspectCount = data.aspects ? data.aspects.length : 0;
+            statusBar.setStatus(`Chart updated - ${aspectCount} aspects found`);
+            setTimeout(() => statusBar.setStatus('Ready'), 3000);
         }
     }
 
@@ -424,8 +429,11 @@ class AppShellElement extends HTMLElement {
     }
 
     toggleAspects() {
-        console.log('Toggling aspects');
-        // Toggle aspect lines
+        const chart = this.shadowRoot.querySelector('astro-chart');
+        if (chart) {
+            chart.showAspects = !chart.showAspects;
+            chart.drawChart();
+        }
     }
 
     exportPDF() {

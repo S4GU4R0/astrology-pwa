@@ -125,7 +125,6 @@ function createPropertiesTemplate() {
   return template.content.cloneNode(true);
 }
 
-// Export for use in other modules
 // ES module export
 export { createPropertiesTemplate };
 export default createPropertiesTemplate;

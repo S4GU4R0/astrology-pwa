@@ -8,6 +8,21 @@
 // Note: astronomy-engine will be imported via script tag in HTML
 // Access via global Astronomy object
 
+import {
+    SIGNS,
+    PLANETS,
+    DOMICILE_RULERSHIPS,
+    EXALTATIONS,
+    DETRIMENTS_CORRECTED,
+    FALLS,
+    TRIPLICITY_RULERS,
+    getDomicileRuler,
+    getExaltation,
+    getDetriment,
+    getFall,
+    getBoundRuler
+} from './dignity-tables.js';
+
 /**
  * Calculate planetary positions for a given date, time, and location
  * @param {Date} date - Birth date and time
@@ -435,33 +450,73 @@ export async function calculateCompleteChart(birthDate, latitude, longitude) {
   }
 }
 
-// Import dignity tables (note: add this at top of file if not already there)
-// import { SIGNS, PLANETS, DOMICILE_RULERSHIPS, EXALTATIONS, DETRIMENTS, FALLS, TRIPLICITY_RULERS, getBoundRuler } from './dignity-tables.js';
-
 /**
  * Calculate essential dignities for a planet at a specific longitude
  * @param {string} planetName - Name of the planet ('Sun', 'Moon', etc.)
  * @param {number} longitude - Ecliptic longitude in degrees (0-360)
- * @param {Object} dignityTables - Dignity tables object (optional, for testing)
+ * @param {string} chartSect - Chart sect ('Diurnal' or 'Nocturnal'), optional for triplicity
  * @returns {Object} Object indicating dignities with 'Yes'/'No' values
  */
-export function calculateEssentialDignities(planetName, longitude, dignityTables = null) {
-  // This function requires dignity-tables.js to be imported
-  // For now, return placeholder values
-  // TODO: Import dignity-tables.js and implement full logic
-
+export function calculateEssentialDignities(planetName, longitude, chartSect = null) {
   const signIndex = Math.floor(longitude / 30);
   const degreeInSign = longitude % 30;
 
-  return {
+  const result = {
     domicile: 'No',
     exaltation: 'No',
     detriment: 'No',
     fall: 'No',
-    triplicity: 'No', // Note: Requires sect to determine
+    triplicity: 'No',
     bound: 'No',
     mutualReception: 'No'
   };
+
+  // Check domicile (rulership)
+  const signRuler = getDomicileRuler(signIndex);
+  if (signRuler === planetName) {
+    result.domicile = 'Yes';
+  }
+
+  // Check exaltation
+  const exaltation = getExaltation(planetName);
+  if (exaltation && exaltation.sign === signIndex) {
+    result.exaltation = 'Yes';
+  }
+
+  // Check detriment
+  const detriment = getDetriment(planetName);
+  if (detriment !== undefined) {
+    if (Array.isArray(detriment)) {
+      if (detriment.includes(signIndex)) {
+        result.detriment = 'Yes';
+      }
+    } else if (detriment === signIndex) {
+      result.detriment = 'Yes';
+    }
+  }
+
+  // Check fall
+  const fall = getFall(planetName);
+  if (fall === signIndex) {
+    result.fall = 'Yes';
+  }
+
+  // Check triplicity (if sect is provided)
+  if (chartSect) {
+    const isDayChart = chartSect === 'Diurnal';
+    const triplicityRuler = calculateTriplicityRuler(signIndex, isDayChart);
+    if (triplicityRuler === planetName) {
+      result.triplicity = 'Yes';
+    }
+  }
+
+  // Check bound/term ruler
+  const boundRuler = getBoundRuler(signIndex, degreeInSign);
+  if (boundRuler === planetName) {
+    result.bound = 'Yes';
+  }
+
+  return result;
 }
 
 /**
@@ -498,8 +553,8 @@ export function calculateBoundRuler(longitude) {
   const signIndex = Math.floor(longitude / 30);
   const degreeInSign = longitude % 30;
 
-  // TODO: Implement using getBoundRuler from dignity-tables.js
-  return 'Unknown';
+  const ruler = getBoundRuler(signIndex, degreeInSign);
+  return ruler || 'Unknown';
 }
 
 /**

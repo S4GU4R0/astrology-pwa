@@ -129,7 +129,6 @@ function createSidebarTemplate() {
   return template.content.cloneNode(true);
 }
 
-// Export for use in other modules
 // ES module export
 export { createSidebarTemplate };
 export default createSidebarTemplate;

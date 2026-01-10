@@ -50,9 +50,6 @@ function createAppLayout() {
   return template.content.cloneNode(true);
 }
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { createAppLayout };
-} else {
-  window.AppLayoutTemplate = { createAppLayout };
-}
+// ES module export
+export { createAppLayout };
+export default createAppLayout;

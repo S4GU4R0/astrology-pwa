@@ -316,12 +316,5 @@ function runExample() {
   return evaluation;
 }
 
-// Export for use in Node.js environments or modular ES6 applications
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { PlanetEvaluation, ScoringSystem, runExample };
-}
-
-// Auto-run example when loaded in browser context (optional)
-if (typeof window !== 'undefined') {
-  console.log('Planetary Evaluation System loaded. Call runExample() to see a demo.');
-}
+// ES module exports
+export { PlanetEvaluation, ScoringSystem, runExample };
