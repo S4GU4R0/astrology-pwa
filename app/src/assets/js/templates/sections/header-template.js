@@ -133,9 +133,6 @@ function createHeaderTemplate() {
   return template.content.cloneNode(true);
 }
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { createHeaderTemplate };
-} else {
-  window.HeaderTemplate = { createHeaderTemplate };
-}
+// ES module export
+export { createHeaderTemplate };
+export default createHeaderTemplate;

@@ -126,8 +126,6 @@ function createPropertiesTemplate() {
 }
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { createPropertiesTemplate };
-} else {
-  window.PropertiesTemplate = { createPropertiesTemplate };
-}
+// ES module export
+export { createPropertiesTemplate };
+export default createPropertiesTemplate;

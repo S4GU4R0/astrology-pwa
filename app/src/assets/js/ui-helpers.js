@@ -81,3 +81,12 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
+// ES module exports
+export { showLoadingSpinner, hideLoadingSpinner, showProgressBar, showToast };
+
+// Expose globally for legacy code
+window.showLoadingSpinner = showLoadingSpinner;
+window.hideLoadingSpinner = hideLoadingSpinner;
+window.showProgressBar = showProgressBar;
+window.showToast = showToast;

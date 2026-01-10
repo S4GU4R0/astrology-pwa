@@ -163,9 +163,6 @@ class TemplateRenderer {
   }
 }
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { TemplateRenderer };
-} else {
-  window.TemplateRenderer = TemplateRenderer;
-}
+// ES module export
+export { TemplateRenderer };
+export default TemplateRenderer;

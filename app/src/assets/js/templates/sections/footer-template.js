@@ -28,8 +28,6 @@ function createFooterTemplate() {
 }
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { createFooterTemplate };
-} else {
-  window.FooterTemplate = { createFooterTemplate };
-}
+// ES module export
+export { createFooterTemplate };
+export default createFooterTemplate;

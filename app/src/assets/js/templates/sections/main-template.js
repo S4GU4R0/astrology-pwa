@@ -94,8 +94,6 @@ function createMainTemplate() {
 }
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { createMainTemplate };
-} else {
-  window.MainTemplate = { createMainTemplate };
-}
+// ES module export
+export { createMainTemplate };
+export default createMainTemplate;

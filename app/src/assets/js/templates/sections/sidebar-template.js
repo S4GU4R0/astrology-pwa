@@ -130,8 +130,6 @@ function createSidebarTemplate() {
 }
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { createSidebarTemplate };
-} else {
-  window.SidebarTemplate = { createSidebarTemplate };
-}
+// ES module export
+export { createSidebarTemplate };
+export default createSidebarTemplate;
