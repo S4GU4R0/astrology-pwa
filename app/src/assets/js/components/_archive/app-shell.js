@@ -2,6 +2,10 @@
  * AppShell Web Component
  * Main application shell that composes all components
  */
+
+import { createPreferencesWindow } from './preferences-window.js';
+import { PreferencesManager } from '../../../lib/preferences-manager.js';
+
 class AppShellElement extends HTMLElement {
     constructor() {
         super();
@@ -12,6 +16,7 @@ class AppShellElement extends HTMLElement {
         this.render();
         this.attachEventListeners();
         this.initializeChart();
+        this.loadAndApplyPreferences();
     }
 
     render() {
@@ -405,7 +410,45 @@ class AppShellElement extends HTMLElement {
 
     openPreferences() {
         console.log('Opening preferences');
-        // Open preferences dialog
+        createPreferencesWindow();
+    }
+
+    loadAndApplyPreferences() {
+        // Load preferences from storage
+        const preferences = PreferencesManager.load();
+
+        // Listen for preference updates
+        window.addEventListener('preferences-updated', (e) => {
+            this.applyPreferences(e.detail);
+        });
+
+        // Apply initial preferences
+        this.applyPreferences(preferences);
+    }
+
+    applyPreferences(preferences) {
+        // Apply theme
+        if (window.themer) {
+            const theme = preferences.general.theme;
+            const accentIndex = preferences.general.accentColor;
+
+            if (theme === 'auto') {
+                // Use system preference
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                window.themer.setTheme(prefersDark ? 'dark' : 'light');
+            } else {
+                window.themer.setTheme(theme);
+            }
+
+            // Apply accent color
+            const accentColors = ['#810CA8', '#38E54D', '#3AB0FF', '#F94C66', '#FFC54D'];
+            window.themer.setAccent(accentIndex, accentColors[accentIndex]);
+        }
+
+        // Dispatch event for other components
+        document.dispatchEvent(new CustomEvent('preferences-applied', {
+            detail: preferences
+        }));
     }
 
     zoomIn() {

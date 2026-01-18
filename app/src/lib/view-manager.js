@@ -3,12 +3,22 @@
  * Handles switching between different views in the main content area
  */
 
+import { createPlanetaryConditionsView } from '../assets/js/components/planetary-conditions-view.js';
+import { createTestSuiteView } from '../assets/js/components/test-suite-view.js';
+
 export const ViewManager = {
     currentView: 'chart',
+    currentViewInstance: null,
 
     loadView(viewName) {
         const mainContent = document.getElementById('mainContentArea');
         if (!mainContent) return;
+
+        // Cleanup previous view instance if it exists
+        if (this.currentViewInstance && typeof this.currentViewInstance.destroy === 'function') {
+            this.currentViewInstance.destroy();
+            this.currentViewInstance = null;
+        }
 
         mainContent.style.alignItems = 'flex-start';
         mainContent.style.justifyContent = 'flex-start';
@@ -37,7 +47,8 @@ export const ViewManager = {
                 break;
 
             case 'planetary_conditions':
-                mainContent.innerHTML = '<planetary-conditions-view></planetary-conditions-view>';
+                // Use template-based function instead of Web Component
+                this.currentViewInstance = createPlanetaryConditionsView(mainContent);
                 break;
 
             case 'natal_report':
@@ -45,7 +56,8 @@ export const ViewManager = {
                 break;
 
             case 'test':
-                mainContent.innerHTML = '<test-suite-view></test-suite-view>';
+                // Use template-based function instead of Web Component
+                this.currentViewInstance = createTestSuiteView(mainContent);
                 break;
 
             default:

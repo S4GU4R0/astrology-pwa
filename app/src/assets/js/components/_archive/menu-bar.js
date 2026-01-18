@@ -29,6 +29,7 @@ class MenuBarElement extends HTMLElement {
                         border-bottom: 1px solid #374151;
                         padding: 0 8px;
                         font-size: 13px;
+                        overflow: visible;
                     }
                 }
 
@@ -36,12 +37,21 @@ class MenuBarElement extends HTMLElement {
                     display: flex;
                     align-items: center;
                     width: 100%;
+                    overflow: visible;
                 }
 
                 .logo-section {
+                    position: relative;
                     display: flex;
                     align-items: center;
                     margin-right: 16px;
+                    padding: 4px 12px;
+                    cursor: pointer;
+                    border-radius: 4px;
+                }
+
+                .logo-section:hover {
+                    background: #374151;
                 }
 
                 .logo-section img {
@@ -82,9 +92,10 @@ class MenuBarElement extends HTMLElement {
                     border: 1px solid #374151;
                     border-radius: 6px;
                     min-width: 192px;
-                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-                    z-index: 50;
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+                    z-index: 9999;
                     margin-top: 4px;
+                    pointer-events: auto;
                 }
 
                 .dropdown-menu.show {
@@ -132,12 +143,14 @@ class MenuBarElement extends HTMLElement {
             </style>
 
             <div class="menu-container">
-                <div class="logo-section">
-                    <img src="images/logos/logo-c98274bea344d9c7669cdc3c97a5bebe.png" alt="AstroDesk">
-                    <span>AstroDesk</span>
-                </div>
-                
                 <nav class="menu-nav">
+                    <div class="logo-section menu-item" data-menu="app">
+                        <img src="favicon.ico" alt="Lunar Ice">
+                        <span>Lunar Ice</span>
+                        <div class="dropdown-menu" id="app-menu">
+                            <a href="#" class="menu-option" data-action="preferences">Preferences...</a>
+                        </div>
+                    </div>
                     <div class="menu-item" data-menu="file">
                         File
                         <div class="dropdown-menu" id="file-menu">
@@ -207,7 +220,7 @@ class MenuBarElement extends HTMLElement {
                             <a href="#" class="menu-option" data-action="documentation">Documentation</a>
                             <a href="#" class="menu-option" data-action="keyboard-shortcuts">Keyboard Shortcuts</a>
                             <div class="menu-divider"></div>
-                            <a href="#" class="menu-option" data-action="about">About AstroDesk</a>
+                            <a href="#" class="menu-option" data-action="about">About Lunar Ice</a>
                         </div>
                     </div>
                 </nav>
@@ -232,19 +245,45 @@ class MenuBarElement extends HTMLElement {
     attachEventListeners() {
         const menuItems = this.shadowRoot.querySelectorAll('.menu-item');
         const dropdowns = this.shadowRoot.querySelectorAll('.dropdown-menu');
+        const logoSection = this.shadowRoot.querySelector('.logo-section');
+
+        // Handle logo section (app menu) hover/click
+        if (logoSection) {
+            const menuName = logoSection.dataset.menu;
+            const dropdown = this.shadowRoot.getElementById(`${menuName}-menu`);
+
+            if (dropdown) {
+                logoSection.addEventListener('mouseenter', () => {
+                    this.hideAllDropdowns();
+                    this.showDropdown(menuName);
+                });
+
+                logoSection.addEventListener('mouseleave', (e) => {
+                    setTimeout(() => {
+                        if (!dropdown.matches(':hover')) {
+                            this.hideDropdown(menuName);
+                        }
+                    }, 100);
+                });
+
+                dropdown.addEventListener('mouseleave', () => {
+                    this.hideDropdown(menuName);
+                });
+            }
+        }
 
         // Handle menu item hover/click
         menuItems.forEach(item => {
             const menuName = item.dataset.menu;
             const dropdown = this.shadowRoot.getElementById(`${menuName}-menu`);
-            
+
             if (dropdown) {
                 // Show dropdown on hover
                 item.addEventListener('mouseenter', () => {
                     this.hideAllDropdowns();
                     this.showDropdown(menuName);
                 });
-                
+
                 item.addEventListener('mouseleave', (e) => {
                     // Hide when leaving the menu item unless entering the dropdown
                     setTimeout(() => {
@@ -253,7 +292,7 @@ class MenuBarElement extends HTMLElement {
                         }
                     }, 100);
                 });
-                
+
                 dropdown.addEventListener('mouseleave', () => {
                     this.hideDropdown(menuName);
                 });
@@ -280,7 +319,16 @@ class MenuBarElement extends HTMLElement {
         iconButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const title = e.currentTarget.getAttribute('title');
-                this.handleIconAction(title);
+                if (title === 'Settings') {
+                    // Trigger preferences action
+                    this.dispatchEvent(new CustomEvent('menu-action', {
+                        detail: { action: 'preferences' },
+                        bubbles: true,
+                        composed: true
+                    }));
+                } else {
+                    this.handleIconAction(title);
+                }
             });
         });
     }
@@ -290,6 +338,9 @@ class MenuBarElement extends HTMLElement {
         if (dropdown) {
             dropdown.classList.add('show');
             this.activeMenu = menuName;
+            console.log('Showing dropdown:', menuName);
+        } else {
+            console.warn('Dropdown not found:', menuName);
         }
     }
 
@@ -334,7 +385,7 @@ class MenuBarElement extends HTMLElement {
                 composed: true
             }));
         }
-        
+
         this.hideAllDropdowns();
     }
 

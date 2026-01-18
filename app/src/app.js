@@ -21,14 +21,15 @@ import chartRenderer from './assets/js/chart-renderer.js';
 // Import UI helpers (exposes showToast globally)
 import './assets/js/ui-helpers.js';
 
-// Import view components (web components self-register)
-import './assets/js/components/planetary-conditions-view.js';
-import './assets/js/components/test-suite-view.js';
+// Note: All view components are now template-based and imported by ViewManager
+// - planetary-conditions-view.js (converted)
+// - test-suite-view.js (converted)
 
 // Store renderer reference for status bar updates
 let renderer = null;
 
 // Location geocoding cache (major cities)
+// TODO: Move this to a separate file
 const CITY_COORDS = {
     'new york': { lat: 40.7128, lon: -74.0060 },
     'new york, ny': { lat: 40.7128, lon: -74.0060 },

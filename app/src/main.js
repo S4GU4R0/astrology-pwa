@@ -7,6 +7,9 @@ import '../css/style.css';
 import * as Utils from "./plugins/utils";
 import Themer from "./plugins/themer";
 
+// Preferences
+import './assets/js/alpine-components/preferences-window-data.js';
+
 // App initialization
 import { initApp } from './app.js';
 

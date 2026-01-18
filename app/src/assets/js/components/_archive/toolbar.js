@@ -120,13 +120,6 @@ class ToolbarElement extends HTMLElement {
                 <option value="synastry">Synastry</option>
                 <option value="composite">Composite</option>
             </select>
-            
-            <select class="toolbar-select" id="house-system">
-                <option value="placidus">Placidus</option>
-                <option value="koch">Koch</option>
-                <option value="whole-sign">Whole Sign</option>
-                <option value="equal">Equal</option>
-            </select>
         `;
     }
 

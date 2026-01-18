@@ -16,7 +16,7 @@ export default defineConfig({
             mode            : 'production',
             base            : '/',
             srcDir          : 'app/src',
-            includeAssets   : ['favicon.svg'],
+            includeAssets   : ['favicon.ico'],
             injectRegister  : process.env.SW_INLINE === undefined ? 'auto' : 'script',
             selfDestroying  : process.env.SW_DESTROY === 'true',
             manifest        : {
