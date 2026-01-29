@@ -7,19 +7,19 @@
     <link rel="icon" href="/favicon.ico" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/pwa-192x192.png">
     <link rel="mask-icon" href="/favicon.ico" color="#FFFFFF">
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#1f2937">
+    <meta name="theme-color" content="#1f2937">
 
     <meta name="title" content="Lunar Ice">
-    <meta name="description" content="Astrology charting application">
-    <meta name="keywords" content="astrology, natal chart, horoscope, pwa">
+    <meta name="description" content="Hellenistic astrology charting application">
+    <meta name="keywords" content="astrology, natal chart, horoscope, hellenistic, pwa">
     <meta name="robots" content="index, follow">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="language" content="English">
 
     <meta name="twitter:card" content="summary" />
     <meta property="og:title" content="Lunar Ice" />
-    <meta property="og:description" content="Astrology charting application" />
+    <meta property="og:description" content="Hellenistic astrology charting application" />
     <meta property="og:image" content="/pwa-512x512.png" />
 
     <title>Lunar Ice</title>
@@ -27,19 +27,16 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700,800,900|Space+Grotesk:400,500,600,700,800,900&subset=latin">
+        href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700|Space+Grotesk:400,500,600,700&subset=latin&display=swap">
 
-    <!-- Alpine.js -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
-
+        <!-- TODO: add min.js so it works offline -->
     <!-- Astronomy Engine for planetary calculations -->
     <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 </head>
 
-<body class="antialiased bg-body text-body font-body">
-    <div id="app-container">
-        <!-- App renders here -->
-    </div>
+<body class="antialiased">
+    <!-- Vue app mounts here -->
+    <div id="app"></div>
 
     <!-- Vite entry point -->
     <script type="module" src="/src/main.js"></script>

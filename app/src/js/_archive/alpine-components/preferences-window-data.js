@@ -3,7 +3,7 @@
  * Handles window state, drag functionality, and preference management
  */
 
-import { PreferencesManager } from '../../../lib/preferences-manager.js';
+import { PreferencesManager } from '../helpers/preferences-manager.js';
 
 /**
  * Create the Alpine.js component data for preferences window

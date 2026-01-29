@@ -373,7 +373,7 @@ module.exports = {
     },
     content: [
         "./app/**/*.html",
-        "./app/src/**/*.js"
+        "./app/src/**/*.{js,vue}"
     ],
     plugins: [],
     darkMode: 'class',

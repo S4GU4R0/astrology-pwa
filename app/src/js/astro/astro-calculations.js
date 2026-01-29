@@ -166,11 +166,12 @@ export function calculateAscendant(date, latitude, longitude) {
     const obliqRad = obliquity * Math.PI / 180;
     const ramcRad = ramc * Math.PI / 180;
 
-    const y = Math.sin(ramcRad) * Math.cos(obliqRad);
-    const x = Math.cos(ramcRad);
+    // Correct Ascendant formula: ASC = atan2(-cos(RAMC), sin(RAMC)*cos(ε) + tan(lat)*sin(ε))
+    const y = -Math.cos(ramcRad);
+    const x = Math.sin(ramcRad) * Math.cos(obliqRad) + Math.tan(latRad) * Math.sin(obliqRad);
     const asc = Math.atan2(y, x) * 180 / Math.PI;
 
-    let ascendant = asc + 180; // Adjust for proper quadrant
+    let ascendant = asc + 180;
     if (ascendant < 0) ascendant += 360;
     if (ascendant >= 360) ascendant -= 360;
 
@@ -188,10 +189,12 @@ export function calculateAscendant(date, latitude, longitude) {
  * @returns {Array<number>} Array of 12 house cusp longitudes
  */
 export function calculateHouseCusps(ascendant) {
+  // Whole sign houses: each house is an entire sign
+  // House 1 starts at 0° of the sign containing the ascendant
+  const ascSign = Math.floor(ascendant / 30);
   const houses = [];
   for (let i = 0; i < 12; i++) {
-    let cusp = ascendant + (i * 30);
-    if (cusp >= 360) cusp -= 360;
+    let cusp = ((ascSign + i) % 12) * 30;
     houses.push(cusp);
   }
   return houses;

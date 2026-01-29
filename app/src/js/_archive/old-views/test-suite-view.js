@@ -100,8 +100,8 @@ function render() {
 async function loadModules() {
     try {
         const [geocodingModule, astroModule] = await Promise.all([
-            import('../geocoding-service.js'),
-            import('../astro-calculations.js')
+            import('../helpers/geocoding-service.js'),
+            import('../astro/astro-calculations.js')
         ]);
 
         viewState.testModules = {

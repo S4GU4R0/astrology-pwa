@@ -3,12 +3,25 @@
  * Handles switching between different views in the main content area
  */
 
-import { createPlanetaryConditionsView } from '../assets/js/components/planetary-conditions-view.js';
-import { createTestSuiteView } from '../assets/js/components/test-suite-view.js';
+import { createPlanetaryConditionsView } from '../views/planetary-conditions-view.js';
+import { createTestSuiteView } from '../views/test-suite-view.js';
+import { createNatalReportView } from '../views/natal-report-view.js';
+
+const VIEW_STORAGE_KEY = 'lunarIce_currentView';
 
 export const ViewManager = {
     currentView: 'chart',
     currentViewInstance: null,
+
+    /**
+     * Initialize the view manager and restore the last active view
+     */
+    init() {
+        const savedView = localStorage.getItem(VIEW_STORAGE_KEY);
+        if (savedView) {
+            this.loadView(savedView);
+        }
+    },
 
     loadView(viewName) {
         const mainContent = document.getElementById('mainContentArea');
@@ -52,7 +65,7 @@ export const ViewManager = {
                 break;
 
             case 'natal_report':
-                mainContent.innerHTML = '<natal-report-view></natal-report-view>';
+                this.currentViewInstance = createNatalReportView(mainContent);
                 break;
 
             case 'test':
@@ -65,6 +78,7 @@ export const ViewManager = {
         }
 
         this.currentView = viewName;
+        localStorage.setItem(VIEW_STORAGE_KEY, viewName);
     }
 };
 

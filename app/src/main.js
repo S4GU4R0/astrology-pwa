@@ -1,29 +1,29 @@
-import { pwaInfo } from 'virtual:pwa-info';
+/**
+ * Main Entry Point - Vue Application Bootstrap
+ */
 
-// Styles
-import '../css/style.css';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import router from './router';
+import App from './App.vue';
 
-// Plugins
-import * as Utils from "./plugins/utils";
-import Themer from "./plugins/themer";
+// Import global CSS (Tailwind)
+import './css/app.css';
 
-// Preferences
-import './assets/js/alpine-components/preferences-window-data.js';
+// Import and initialize theme before app mounts
+import { initTheme } from './composables/useTheme';
+initTheme();
 
-// App initialization
-import { initApp } from './app.js';
+// Create Vue app
+const app = createApp(App);
 
-// Initialize theme
-const theme = Themer();
-theme.initTheme();
+// Install Pinia (state management)
+app.use(createPinia());
 
-// Initialize app when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
-} else {
-    initApp();
-}
+// Install Vue Router
+app.use(router);
 
-// Debug info
-console.log('Utils test:', Utils.msToTime(1300));
-console.log('PWA Info:', pwaInfo);
+// Mount the app
+app.mount('#app');
+
+// PWA is handled automatically by vite-plugin-pwa

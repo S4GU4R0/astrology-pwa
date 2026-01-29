@@ -1,0 +1,106 @@
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+    html {
+        font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    /* Dark mode (default) */
+    .dark body {
+        @apply bg-gray-900 text-gray-200;
+    }
+
+    /* Light mode */
+    .light body {
+        @apply bg-gray-100 text-gray-800;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    /* Dark mode scrollbar */
+    .dark ::-webkit-scrollbar-track {
+        @apply bg-gray-800;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+        @apply bg-gray-600 rounded;
+    }
+
+    .dark ::-webkit-scrollbar-thumb:hover {
+        @apply bg-gray-500;
+    }
+
+    /* Light mode scrollbar */
+    .light ::-webkit-scrollbar-track {
+        @apply bg-gray-200;
+    }
+
+    .light ::-webkit-scrollbar-thumb {
+        @apply bg-gray-400 rounded;
+    }
+
+    .light ::-webkit-scrollbar-thumb:hover {
+        @apply bg-gray-500;
+    }
+}
+
+/* Component styles */
+@layer components {
+    /* Form inputs - Dark mode */
+    .dark .input {
+        @apply w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-gray-200;
+        @apply focus:outline-none focus:border-blue-500;
+    }
+
+    /* Form inputs - Light mode */
+    .light .input {
+        @apply w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm text-gray-800;
+        @apply focus:outline-none focus:border-blue-500;
+    }
+
+    /* Buttons */
+    .btn {
+        @apply px-4 py-2 rounded font-semibold text-sm transition-colors;
+    }
+
+    .btn-primary {
+        @apply bg-blue-600 text-white hover:bg-blue-700;
+    }
+
+    .btn-secondary {
+        @apply bg-gray-600 text-white hover:bg-gray-700;
+    }
+
+    .btn-success {
+        @apply bg-green-600 text-white hover:bg-green-700;
+    }
+
+    /* Cards - Dark mode */
+    .dark .card {
+        @apply bg-gray-800 border border-gray-700 rounded-lg;
+    }
+
+    /* Cards - Light mode */
+    .light .card {
+        @apply bg-white border border-gray-200 rounded-lg shadow-sm;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        @apply bg-white text-black;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}

@@ -4,22 +4,22 @@
  */
 
 // Import template system
-import { TemplateRenderer } from './assets/js/templates/template-renderer.js';
-import { createHeaderTemplate } from './assets/js/templates/sections/header-template.js';
-import { createSidebarTemplate } from './assets/js/templates/sections/sidebar-template.js';
-import { createMainTemplate } from './assets/js/templates/sections/main-template.js';
-import { createPropertiesTemplate } from './assets/js/templates/sections/properties-template.js';
-import { createFooterTemplate } from './assets/js/templates/sections/footer-template.js';
+import { TemplateRenderer } from './js/templates/template-renderer.js';
+import { createHeaderTemplate } from './js/templates/header-template.js';
+import { createSidebarTemplate } from './js/templates/sidebar-template.js';
+import { createMainTemplate } from './js/templates/main-template.js';
+import { createPropertiesTemplate } from './js/templates/properties-template.js';
+import { createFooterTemplate } from './js/templates/footer-template.js';
 
 // Import core modules
-import { ChartData } from './lib/chart-data.js';
-import { ViewManager } from './lib/view-manager.js';
+import { ChartData } from './js/astro/chart-data.js';
+import { ViewManager } from './js/helpers/view-manager.js';
 
 // Import chart renderer
-import chartRenderer from './assets/js/chart-renderer.js';
+import chartRenderer from './js/astro/chart-renderer.js';
 
 // Import UI helpers (exposes showToast globally)
-import './assets/js/ui-helpers.js';
+import './js/helpers/ui-helpers.js';
 
 // Note: All view components are now template-based and imported by ViewManager
 // - planetary-conditions-view.js (converted)
@@ -105,6 +105,9 @@ export function initApp() {
         properties: createPropertiesTemplate,
         footer: createFooterTemplate
     });
+
+    // Restore last active view
+    ViewManager.init();
 
     // Load saved chart data
     const savedData = ChartData.load();

@@ -4,215 +4,103 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an astrology PWA (Progressive Web App) application built with vanilla JavaScript and Tailwind CSS. The app is called "Lunar Ice" and provides astrological chart rendering and analysis capabilities.
+This is an astrology PWA (Progressive Web App) called "Lunar Ice" built with vanilla JavaScript and Tailwind CSS. It provides astrological chart rendering and analysis capabilities.
 
-**Architecture Note:** This project uses a **template-based approach** with vanilla JavaScript, NOT Web Components. This is intentional because Web Components with Shadow DOM are incompatible with Tailwind CSS (Shadow DOM encapsulation prevents Tailwind utility classes from working).
+**Architecture Note:** This project uses a **template-based approach** with vanilla JavaScript, NOT Web Components. Web Components with Shadow DOM are incompatible with Tailwind CSS (Shadow DOM encapsulation prevents Tailwind utility classes from working). All UI is built with functions that return HTML strings or DOM fragments with Tailwind classes.
 
-## Build System
-
-The project uses **Vite** as the build tool with the VitePWA plugin for Progressive Web App functionality.
+## Commands
 
 ### Development
 ```bash
-npm run dev:run
-```
-Runs the development server with hot module replacement (HMR). It:
-- Starts Vite dev server
-- Enables service worker in development mode
-- Serves the app from the `app/` directory
-- Auto-refreshes on file changes with HMR
-- Debug logging enabled for PWA plugin
-
-### Alternative Development Modes
-```bash
-npm run dev:destroy    # Development with service worker self-destruction
-npm run dev:start      # Build and serve production build locally
-npm run dev:serve      # Serve the production dist folder
+npm run dev:run          # Start dev server with HMR (recommended)
+npm run dev:destroy      # Dev server with service worker self-destruction
+npm run dev:start        # Build and serve production build locally
+npm run dev:serve        # Serve the production dist folder
 ```
 
 ### Production Build
 ```bash
-npm run build
+npm run build            # Build to ./dist/
 ```
-Creates a production build in `./dist/` (relative to project root). This:
-- Builds from the `app/` directory
-- Compiles and bundles all JavaScript modules
-- Processes Tailwind CSS via PostCSS
-- Generates service worker for offline functionality
-- Creates PWA manifest
-- Outputs to `../dist` (parent of app folder)
 
-**CRITICAL**: The build outputs to `./dist/`, not `./public/`. The `app/` directory is the source directory.
+**CRITICAL**: The build outputs to `./dist/`, not `./public/`. The `app/` directory is the Vite root/source directory.
 
-## Project Structure
+## Architecture
 
-### Root Configuration Files
-- `vite.config.js` - Vite configuration with PWA plugin setup
-- `tailwind.config.js` - Tailwind CSS configuration with custom theme
-- `postcss.config.js` - PostCSS configuration (Tailwind + Autoprefixer + Nested)
-- `package.json` - Project dependencies and npm scripts
+### Application Flow
+1. `app/index.html` loads `app/src/main.js`
+2. `main.js` initializes theme (via `themer.js`) and calls `initApp()` from `app.js`
+3. `app.js` creates a `TemplateRenderer` which composes the UI from template functions
+4. Template functions (`app/src/js/templates/`) return DOM fragments with Tailwind classes
+5. `ViewManager` (`app/src/js/helpers/view-manager.js`) handles switching views in the main content area
 
-### Source Directory (`./app/`)
-The `app/` directory is the Vite root and contains all source files:
+### Key Directories
+```
+app/                          # Vite root (source directory)
+├── src/
+│   ├── main.js               # Entry point - theme init, app bootstrap
+│   ├── app.js                # App initialization, form handlers, chart calculation
+│   ├── js/
+│   │   ├── astro/            # Astrology calculations & data
+│   │   │   ├── chart-data.js
+│   │   │   ├── astro-calculations.js
+│   │   │   ├── chart-renderer.js
+│   │   │   ├── dignity-tables.js
+│   │   │   └── planet_evaluation.js
+│   │   ├── views/            # View components
+│   │   │   ├── planetary-conditions-view.js
+│   │   │   ├── test-suite-view.js
+│   │   │   └── preferences-window.js
+│   │   ├── templates/        # UI templates
+│   │   │   ├── template-renderer.js
+│   │   │   ├── header-template.js
+│   │   │   ├── sidebar-template.js
+│   │   │   ├── main-template.js
+│   │   │   ├── properties-template.js
+│   │   │   └── footer-template.js
+│   │   ├── helpers/          # Utility modules
+│   │   │   ├── view-manager.js
+│   │   │   ├── preferences-manager.js
+│   │   │   ├── ui-helpers.js
+│   │   │   ├── error-handling.js
+│   │   │   └── geocoding-service.js
+│   │   ├── vendor/           # Third-party libraries
+│   │   │   └── astronomy.browser.min.js
+│   │   └── _archive/         # Legacy code (not imported)
+│   ├── plugins/
+│   │   ├── themer.js         # Dark mode (class-based strategy)
+│   │   ├── indexedDB.js      # Local data persistence
+│   │   └── utils.js          # Utility functions
+│   └── css/                  # Tailwind CSS source
+├── public/                   # Static assets (icons, favicons)
+dist/                         # Build output (generated, never edit)
+app/dev-dist/                 # Dev service worker files (generated)
+```
 
-**Entry Points:**
-- `app/index.html` - Main HTML entry point
-- `app/src/main.js` - Main JavaScript entry point (imported by index.html)
-- `app/src/app.js` - Core application initialization
-
-**Styling:**
-- `app/css/` - CSS source files including Tailwind imports
-
-**Public Assets:**
-- `app/public/` - Static assets copied as-is to dist (favicons, icons, etc.)
-- PWA icons (android-chrome, apple-touch-icon, favicon variants)
-
-**Core Libraries:**
-- `app/src/lib/chart-data.js` - Astrological chart data models and calculations
-- `app/src/lib/view-manager.js` - View state management
-
-**Plugins:**
-- `app/src/plugins/themer.js` - Dark mode and theme management
-- `app/src/plugins/indexedDB.js` - Local data persistence
-- `app/src/plugins/utils.js` - Utility functions
-
-**UI Components (`app/src/assets/js/components/`):**
-This directory contains a mix of active and legacy code:
-
-**Active Components (in use - ALL TEMPLATE-BASED!):**
-- `preferences-window.js` - Preferences modal (template-based) ✅
-- `planetary-conditions-view.js` - Planetary dignities view (template-based) ✅
-- `test-suite-view.js` - Test suite view (template-based) ✅
-
-**All active components have been successfully converted from Web Components to template-based approach!**
-
-**Legacy Components (NOT in use - can be archived/deleted):**
-- `app-shell.js` - Old main shell (replaced by template system) 💀
-- `app-layout.js` - Old layout (not imported) 💀
-- `astro-chart.js` - Old chart renderer (not imported) 💀
-- `chart-form.js` - Old form (not imported) 💀
-- `menu-bar.js` - Old menu bar (replaced by header-template.js) 💀
-- `toolbar.js` - Old toolbar (not imported) 💀
-- `sidebar.js` - Old sidebar (replaced by sidebar-template.js) 💀
-- `mobile-buttons.js` - Old mobile buttons (not imported) 💀
-- `mobile-menu.js` - Old mobile menu (not imported) 💀
-- `status-bar.js` - Old status bar (not imported) 💀
-
-**Templates (`app/src/assets/js/templates/sections/`):**
-HTML template generators for major UI sections. These functions return HTML strings with Tailwind classes that get inserted into the regular DOM. These are actively used by `app.js`:
-- `header-template.js` - Top header/menu bar ✅
-- `sidebar-template.js` - Sidebar with chart inputs ✅
-- `main-template.js` - Main content area ✅
-- `properties-template.js` - Chart properties panel ✅
-- `footer-template.js` - Footer content ✅
-
-**Helpers:**
-- `app/src/assets/js/ui-helpers.js` - UI utility functions
-- `app/src/assets/js/error-handling.js` - Error handling utilities
-- `app/src/assets/js/global-14392.js` - Global utilities
-
-**Module Communication:**
-UI modules communicate via custom events bubbling through the regular DOM. Common events include:
-- Chart data updates
-- Toolbar and menu actions
-- Mobile menu toggles
-- Navigation state changes
-- Export and sharing actions
-
-### Build Output (`./dist/`)
-Generated directory - **never edit files here directly**. Created by `npm run build`.
-
-### Development Output (`./app/dev-dist/`)
-Generated during development by Vite - contains service worker files in dev mode.
+### Module Communication
+UI modules communicate via custom events on the DOM:
+- `view-change` - Switch views (listened by ViewManager)
+- Chart data updates, menu actions, navigation state changes
 
 ## Tailwind Configuration
 
-The Tailwind config in `./tailwind.config.js` (project root) uses:
-- Custom preset with extended theme (colors, spacing, typography)
-- Custom fonts: "Inter" (body), "Space Grotesk" (headings)
-- Dark mode via `class` strategy (not media query)
+- Dark mode: `class` strategy (toggle via `themer.js`)
 - Content paths: `./app/**/*.html`, `./app/src/**/*.js`
-- Includes comprehensive spacing, typography, and color scales
-
-The configuration extends from a base preset with:
-- Custom screen breakpoints (sm: 640px, md: 768px, lg: 1024px, xl: 1140px)
-- "Source Sans Pro" as the base font family
-- Extensive theme customization for colors, shadows, borders, etc.
-
-## CSS Processing
-
-PostCSS configuration (`postcss.config.js`):
-- `tailwindcss` - Processes Tailwind directives
-- `autoprefixer` - Adds vendor prefixes
-- `postcss-nested` - Supports nested CSS syntax
+- Fonts: "Inter" (body), "Space Grotesk" (headings) in theme extension; preset uses "Source Sans Pro"
+- Breakpoints: sm 640px, md 768px, lg 1024px, xl 1140px
+- PostCSS plugins: tailwindcss, autoprefixer, postcss-nested
 
 ## Responsive Design
 
-The app uses a responsive layout:
 - **Desktop (≥768px)**: Full menu bar, toolbar, sidebar layout
 - **Mobile (<768px)**: Mobile buttons and slide-out menu
-- Dark mode managed via class-based strategy (see `app/src/plugins/themer.js`)
 
-## PWA Features
+## PWA
 
-Full PWA support via VitePWA plugin (configured in `vite.config.js`):
-- Automatic service worker generation
-- Web app manifest with icons
-- Offline functionality
-- Install prompts on supported browsers
-- Development mode service worker for testing
-
-**PWA Configuration:**
-- Name: "PWA Router" (configured in manifest)
-- Icons: 192x192 and 512x512 PNG variants
-- Theme color: #ffffff
-- Service worker injection: automatic in production, configurable in dev
-
-## Development Workflow
-
-1. **Start Development Server:**
-   ```bash
-   npm run dev:run
-   ```
-   - Vite dev server with HMR
-   - Service worker enabled in dev mode
-   - Access at `http://localhost:5173` (default Vite port)
-
-2. **Edit Source Files:**
-   - UI modules in `app/src/assets/js/components/`
-   - Template generators in `app/src/assets/js/templates/sections/`
-   - Core logic in `app/src/lib/` and `app/src/plugins/`
-   - Main entry points: `app/index.html`, `app/src/main.js`, `app/src/app.js`
-
-3. **Style Changes:**
-   - Edit Tailwind classes directly in template strings and UI modules
-   - Modify `tailwind.config.js` for theme changes
-   - CSS files in `app/css/` for custom styles
-   - Remember: Tailwind classes work because this uses regular DOM, not Shadow DOM
-
-4. **Build for Production:**
-   ```bash
-   npm run build
-   ```
-   - Output to `./dist/`
-   - Minified and optimized bundles
-   - Service worker and manifest generated
-
-5. **Test Production Build Locally:**
-   ```bash
-   npm run dev:start    # or npm run dev:serve after building
-   ```
+VitePWA plugin handles service worker generation automatically. Dev mode SW enabled via `npm run dev:run`.
 
 ## Important Notes
 
 - **Never edit files in `./dist/` or `./app/dev-dist/`** - these are generated
-- Vite handles all bundling, code splitting, and optimization
-- Service worker is automatically generated - no manual SW code needed (unless customizing)
-- HMR works out of the box for fast development
-- All imports use ES modules - no CommonJS
-
-## Git Workflow
-
-- **Current branch:** `main`
-- **Main branch for PRs:** `main`
-- Check `git status` for current uncommitted changes
+- All imports use ES modules (no CommonJS)
+- Tailwind classes work because this uses regular DOM, not Shadow DOM

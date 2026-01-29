@@ -39,6 +39,7 @@ class ChartRenderer {
      */
     polarToCartesian(degree, radius) {
         const degreesFromAsc = degree - this.ascendant;
+        // Ascendant at 180° (9 o'clock), degrees increase clockwise
         const svgAngle = 180 + degreesFromAsc;
         const angleRad = svgAngle * Math.PI / 180;
 

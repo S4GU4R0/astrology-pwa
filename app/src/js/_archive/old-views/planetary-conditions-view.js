@@ -51,9 +51,9 @@ export function createPlanetaryConditionsView(container) {
 async function loadModules() {
     try {
         const [geocodingModule, astroModule, dignityModule] = await Promise.all([
-            import('../geocoding-service.js'),
-            import('../astro-calculations.js'),
-            import('../dignity-tables.js')
+            import('../helpers/geocoding-service.js'),
+            import('../astro/astro-calculations.js'),
+            import('../astro/dignity-tables.js')
         ]);
 
         viewState.modules = {

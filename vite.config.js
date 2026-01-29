@@ -1,51 +1,55 @@
 import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 import { VitePWA } from 'vite-plugin-pwa';
-
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
-    root    : 'app',
-    css     : {
+    root: 'app',
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./app/src', import.meta.url))
+        }
+    },
+    css: {
         postcss: './postcss.config.js'
     },
-    build   : {
-        sourcemap   : process.env.SOURCE_MAP === 'true',
-        outDir      : '../dist'
+    build: {
+        sourcemap: process.env.SOURCE_MAP === 'true',
+        outDir: '../dist'
     },
-    plugins : [
+    plugins: [
+        vue(),
         VitePWA({
-            mode            : 'production',
-            base            : '/',
-            srcDir          : 'app/src',
-            includeAssets   : ['favicon.ico'],
-            injectRegister  : process.env.SW_INLINE === undefined ? 'auto' : 'script',
-            selfDestroying  : process.env.SW_DESTROY === 'true',
-            manifest        : {
-                name            : 'PWA Router',
-                short_name      : 'PWA Router',
-                theme_color     : '#ffffff',
-                icons           : [
+            registerType: 'autoUpdate',
+            includeAssets: ['favicon.ico', 'pwa-192x192.png', 'pwa-512x512.png'],
+            manifest: {
+                name: 'Lunar Ice',
+                short_name: 'Lunar Ice',
+                description: 'Hellenistic Astrology PWA',
+                theme_color: '#1f2937',
+                background_color: '#111827',
+                icons: [
                     {
-                        src: 'pwa-192x192.png', // <== don't add slash, for testing
+                        src: 'pwa-192x192.png',
                         sizes: '192x192',
-                        type: 'image/png',
+                        type: 'image/png'
                     },
                     {
-                        src: '/pwa-512x512.png', // <== don't remove slash, for testing
+                        src: 'pwa-512x512.png',
                         sizes: '512x512',
-                        type: 'image/png',
+                        type: 'image/png'
                     },
                     {
-                        src: 'pwa-512x512.png', // <== don't add slash, for testing
+                        src: 'pwa-512x512.png',
                         sizes: '512x512',
                         type: 'image/png',
-                        purpose: 'any maskable',
+                        purpose: 'any maskable'
                     }
                 ]
             },
-            devOptions        : {
-                enabled             : process.env.SW_DEV === 'true',
-                //navigateFallback    : 'index.html'
+            devOptions: {
+                enabled: process.env.SW_DEV === 'true'
             }
         })
     ]
-})
+});
